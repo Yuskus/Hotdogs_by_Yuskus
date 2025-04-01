@@ -1,23 +1,35 @@
 using UnityEngine;
 
-public class Level_9 : MonoBehaviour //горчица - 1 стрелка - доступный равен 8
+public class Level_9 : MonoBehaviour
 {
     private Game game;
-    private readonly int levelNum = 8;
+
+    private readonly FirstFewPeopleInfo levelInfo = new()
+    {
+        PeopleOnSceneMaxCount = 4,
+        IntervalMin = 3.3f,
+        IntervalMax = 3.9f,
+        FirstFewPeopleCount = 2,
+        LevelNumber = 8
+    };
+
     private void Awake()
     {
         game = Camera.main.GetComponent<Game>();
         game.AwakeAnyLevel();
     }
+
     private void Start()
     {
         game.StartAnyLevel();
         game.TabloOn();
-        Invoke(nameof(Go), 5f); //CHECK
+        Invoke(nameof(Go), 5f);
     }
-    private void Update() //CHECK
+
+    private void Update()
     {
         game.TimerForLevel();
     }
-    private void Go() => game.TheFirstFew(4, 3.3f, 3.9f,2, levelNum); //CHECK
+
+    private void Go() => game.TheFirstFew(levelInfo);
 }

@@ -1,15 +1,25 @@
 using UnityEngine;
 
-public class Level_41 : MonoBehaviour //бургер,котлета - 2 стрелки - доступный равен 4
+public class Level_41 : MonoBehaviour
 {
     private Game game;
     private LearningPointer lp;
-    private readonly int levelNum = 40;
+
+    private readonly FirstFewPeopleInfo levelInfo = new()
+    {
+        PeopleOnSceneMaxCount = 9,
+        IntervalMin = 2.5f,
+        IntervalMax = 3.4f,
+        FirstFewPeopleCount = 4,
+        LevelNumber = 40
+    };
+
     private void Awake()
     {
         game = Camera.main.GetComponent<Game>();
         game.AwakeAnyLevel();
     }
+
     private void Start()
     {
         game.StartAnyLevel();
@@ -20,10 +30,12 @@ public class Level_41 : MonoBehaviour //бургер,котлета - 2 стрелки - доступный р
             Invoke(nameof(Go), 5f);
         }
     }
-    private void Update() //CHECK
+
+    private void Update()
     {
         game.TimerForLevel();
     }
+
     public void AlmostGo()
     {
         lp.TurnLearnOff();
@@ -33,6 +45,7 @@ public class Level_41 : MonoBehaviour //бургер,котлета - 2 стрелки - доступный р
         game.StoikaOnly.transform.GetChild(16).GetChild(0).GetComponent<BoxCollider2D>().enabled = true;
         Invoke(nameof(Go), 4f);
     }
+
     private void Learning()
     {
         game.learn = true;
@@ -43,5 +56,6 @@ public class Level_41 : MonoBehaviour //бургер,котлета - 2 стрелки - доступный р
         lp.WriteText("Обратите внимание на новый ингридиент: газировка!");
         Invoke(nameof(AlmostGo), 4f);
     }
-    private void Go() => game.TheFirstFew(9, 2.5f, 3.4f, 4, levelNum); //CHECK
+
+    private void Go() => game.TheFirstFew(levelInfo);
 }

@@ -1,29 +1,42 @@
 using UnityEngine;
 
-public class Level_11 : MonoBehaviour //ONION //только нарисовать и добавить сам лук
+public class Level_11 : MonoBehaviour
 {
     private Game game;
+
     private LearningPointer lp;
-    private readonly int levelNum = 10;
+
+    private readonly FirstFewPeopleInfo levelInfo = new()
+    {
+        PeopleOnSceneMaxCount = 4,
+        IntervalMin = 3.2f,
+        IntervalMax = 3.9f,
+        FirstFewPeopleCount = 3,
+        LevelNumber = 10
+    };
+
     private void Awake()
     {
         game = Camera.main.GetComponent<Game>();
         game.AwakeAnyLevel();
     }
+
     private void Start()
     {
         game.StartAnyLevel();
-        if (levelNum == Game.TimelyAvailable) { Learning(); }
+        if (levelInfo.LevelNumber == Game.TimelyAvailable) { Learning(); }
         else
         {
             game.TabloOn();
             Invoke(nameof(Go), 5f);
         }
     }
+
     private void Update()
     {
         game.TimerForLevel();
     }
+
     private void AlmostGo()
     {
         lp.TurnLearnOff();
@@ -33,7 +46,9 @@ public class Level_11 : MonoBehaviour //ONION //только нарисовать и добавить сам
         game.StoikaOnly.transform.GetChild(16).GetChild(0).GetComponent<BoxCollider2D>().enabled = true;
         Invoke(nameof(Go), 4f);
     }
-    public void Go() => game.TheFirstFew(4, 3.2f, 3.9f, 3, levelNum);
+
+    private void Go() => game.TheFirstFew(levelInfo);
+
     private void Learning()
     {
         game.learn = true;
@@ -44,6 +59,7 @@ public class Level_11 : MonoBehaviour //ONION //только нарисовать и добавить сам
         lp.WriteText("Обратите внимание на новые ингридиенты: \nбулочки и котлеты для бургеров!");
         Invoke(nameof(Learning2), 3f);
     }
+
     private void Learning2()
     {
         lp.Press(game.StoikaOnly.transform.GetChild(8).gameObject);

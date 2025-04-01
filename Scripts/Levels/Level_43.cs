@@ -3,21 +3,33 @@ using UnityEngine;
 public class Level_43 : MonoBehaviour
 {
     private Game game;
-    private readonly int levelNum = 42;
+
+    private readonly FirstFewPeopleInfo levelInfo = new()
+    {
+        PeopleOnSceneMaxCount = 9,
+        IntervalMin = 2.4f,
+        IntervalMax = 3.3f,
+        FirstFewPeopleCount = 4,
+        LevelNumber = 42
+    };
+
     private void Awake()
     {
         game = Camera.main.GetComponent<Game>();
         game.AwakeAnyLevel();
     }
+
     private void Start()
     {
         game.StartAnyLevel();
         game.TabloOn();
-        Invoke(nameof(Go), 5f); //CHECK
+        Invoke(nameof(Go), 5f);
     }
-    private void Update() //CHECK
+
+    private void Update()
     {
         game.TimerForLevel();
     }
-    private void Go() => game.TheFirstFew(9, 2.4f, 3.3f, 4, levelNum); //CHECK
+
+    private void Go() => game.TheFirstFew(levelInfo);
 }

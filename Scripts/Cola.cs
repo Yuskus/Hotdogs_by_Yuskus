@@ -18,7 +18,7 @@ public class Cola : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndDragHa
         drag = transform.parent.parent.GetComponent<DraggingComponent>();
         dg = Camera.main.GetComponent<Drag>();
         spRen = GetComponent<SpriteRenderer>();
-        audioClip = Resources.Load<AudioClip>("Sounds/drink"); //CHANGE
+        audioClip = Resources.Load<AudioClip>("Sounds/cola");
         audioSource = GetComponent<AudioSource>();
         audioSource.clip = audioClip;
     }

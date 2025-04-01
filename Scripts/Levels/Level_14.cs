@@ -1,23 +1,35 @@
 using UnityEngine;
 
-public class Level_14 : MonoBehaviour //стакан - 1 стрелка - доступный равен 1
+public class Level_14 : MonoBehaviour
 {
     private Game game;
-    private readonly int levelNum = 13;
+
+    private readonly FirstFewPeopleInfo levelInfo = new()
+    {
+        PeopleOnSceneMaxCount = 4,
+        IntervalMin = 3.1f,
+        IntervalMax = 3.8f,
+        FirstFewPeopleCount = 3,
+        LevelNumber = 13
+    };
+
     private void Awake()
     {
         game = Camera.main.GetComponent<Game>();
         game.AwakeAnyLevel();
     }
+
     private void Start()
     {
         game.StartAnyLevel();
         game.TabloOn();
-        Invoke(nameof(Go), 5f); //CHECK
+        Invoke(nameof(Go), 5f);
     }
-    private void Update() //CHECK
+
+    private void Update()
     {
         game.TimerForLevel();
     }
-    private void Go() => game.TheFirstFew(4, 3.1f, 3.8f,3, levelNum); //CHECK
+
+    private void Go() => game.TheFirstFew(levelInfo);
 }

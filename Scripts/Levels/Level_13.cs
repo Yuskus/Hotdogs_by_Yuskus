@@ -1,23 +1,35 @@
 using UnityEngine;
 
-public class Level_13 : MonoBehaviour //кетчуп,сосиски,булки - 3 стрелки - доступный равен 0
+public class Level_13 : MonoBehaviour
 {
     private Game game;
-    private readonly int levelNum = 12;
+
+    private readonly FirstFewPeopleInfo levelInfo = new()
+    {
+        PeopleOnSceneMaxCount = 4,
+        IntervalMin = 3.2f,
+        IntervalMax = 3.8f,
+        FirstFewPeopleCount = 3,
+        LevelNumber = 12
+    };
+
     private void Awake()
     {
         game = Camera.main.GetComponent<Game>();
         game.AwakeAnyLevel();
     }
+
     private void Start()
     {
         game.StartAnyLevel();
         game.TabloOn();
-        Invoke(nameof(Go), 5f); //CHECK
+        Invoke(nameof(Go), 5f);
     }
+
     private void Update()
     {
         game.TimerForLevel();
     }
-    public void Go() => game.TheFirstFew(4, 3.2f, 3.8f,3, levelNum);
+
+    private void Go() => game.TheFirstFew(levelInfo);
 }

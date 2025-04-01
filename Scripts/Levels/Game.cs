@@ -22,7 +22,7 @@ public class Game : MonoBehaviour //check
     public Text LearnText;
     private Text moneyPan, timePan;
     public Sprite[] forClientsWish = new Sprite[5];
-    private WaitForSeconds forSecond, halfSecond;
+    private WaitForSeconds waitForSecond, halfSecond;
     public readonly Vector2[] PlacePeople = new Vector2[5] { new(5f, 0f), new(9.5f, 0f), new(14f, 0f), new(18.5f, 0f), new(23f, 0f) }; //€чейки дл€ людей
     public readonly string[] forEatPhase = new string[10] { "Nothing", "HotDog", "Burger", "DrinkClone", "Nothing", "Free", "ColaClone", "Nothing", "DrinkClone", "ColaClone" };
     public readonly Dictionary <string, int> priceOfFood = new() { { "HotDog", 15 }, { "Burger", 20 }, { "DrinkClone", 45 }, { "Free", 50 }, { "ColaClone", 50 } };
@@ -116,13 +116,13 @@ public class Game : MonoBehaviour //check
     }
     public void StartAnyLevel() //главный скрипт дл€ уровней
     {
-        forSecond = new(1f);
+        waitForSecond = new(1f);
         halfSecond = new(0.5f);
         learn = false;
         makingClients = false;
         myPlanDisplay.Append("Plan: " + RecData.plans[data.ContinueGame]);
         Plan.GetComponent<Text>().text = myPlanDisplay.ToString();
-        myRecordDisplay.Append("Record: " + data.LvlRec[data.ContinueGame]); //
+        myRecordDisplay.Append("Record: " + data.LvlRec[data.ContinueGame]);
         Record.GetComponent<Text>().text = myRecordDisplay.ToString();
         data.RecSum(out AllTimeSalary);
         moneyPan = TextMoney.GetComponent<Text>();
@@ -137,13 +137,13 @@ public class Game : MonoBehaviour //check
         Invoke(nameof(TabloOff), 3f);
     }
     private void TabloOff() => Canvas.transform.GetChild(3).gameObject.SetActive(false); //start table
-    public void TheFirstFew(int children, float intervalMin, float intervalMax, int max, int level) //start coroutines
+    public void TheFirstFew(FirstFewPeopleInfo levelInfo) //start coroutines
     {
-        _children = children;
-        _intervalMin = intervalMin;
-        _intervalMax = intervalMax;
-        _max = max;
-        _level = level;
+        _children = levelInfo.PeopleOnSceneMaxCount;
+        _intervalMin = levelInfo.IntervalMin;
+        _intervalMax = levelInfo.IntervalMax;
+        _max = levelInfo.FirstFewPeopleCount;
+        _level = levelInfo.LevelNumber;
         StartCoroutine(PeopleFew());
     }
     private IEnumerator PeopleFew() //first few clients
@@ -151,7 +151,7 @@ public class Game : MonoBehaviour //check
         levelIsStarted = true;
         for (int i = 0, interval = 1; i < _max; i++)
         {
-            Sec();
+            CreatePerson();
             interval += 1;
             yield return new WaitForSeconds(UnityEngine.Random.Range(_intervalMin, interval + _intervalMax));
         }
@@ -169,14 +169,14 @@ public class Game : MonoBehaviour //check
         {
             if (OnScene.transform.childCount < _children)
             {
-                Sec();
+                CreatePerson();
                 yield return new WaitForSeconds(UnityEngine.Random.Range(_intervalMin, _intervalMax));
             }
-            else { yield return forSecond; }
+            else { yield return waitForSecond; }
         }
         yield break;
     }
-    public void Sec() => AtHome.transform.GetChild(UnityEngine.Random.Range(0, AtHome.transform.childCount)).gameObject.SetActive(true); //create person
+    public void CreatePerson() => AtHome.transform.GetChild(UnityEngine.Random.Range(0, AtHome.transform.childCount)).gameObject.SetActive(true); //create person
     public void TimerForLevel() //Update()
     {
         if (levelIsStarted)

@@ -3,21 +3,33 @@ using UnityEngine;
 public class Level_2 : MonoBehaviour //стакан - 1 стрелка - доступный равен 1
 {
     private Game game;
-    private readonly int levelNum = 1;
+
+    private readonly FirstFewPeopleInfo levelInfo = new()
+    {
+        PeopleOnSceneMaxCount = 3,
+        IntervalMin = 3.4f,
+        IntervalMax = 4.1f,
+        FirstFewPeopleCount = 2,
+        LevelNumber = 1
+    };
+
     private void Awake()
     {
         game = Camera.main.GetComponent<Game>();
         game.AwakeAnyLevel();
     }
+
     private void Start()
     {
         game.StartAnyLevel();
         game.TabloOn();
-        Invoke(nameof(Go), 5f); //CHECK
+        Invoke(nameof(Go), 5f);
     }
-    private void Update() //CHECK
+
+    private void Update()
     {
         game.TimerForLevel();
     }
-    private void Go() => game.TheFirstFew(3, 3.4f, 4.1f, 2, levelNum); //CHECK
+
+    private void Go() => game.TheFirstFew(levelInfo);
 }

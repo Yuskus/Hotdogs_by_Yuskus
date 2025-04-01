@@ -3,27 +3,40 @@ using UnityEngine;
 public class Level_1 : MonoBehaviour //кетчуп,сосиски,булки - 3 стрелки - доступный равен 0
 {
     private Game game;
+
     private LearningPointer lp;
-    private readonly int levelNum = 0;
+
+    private readonly FirstFewPeopleInfo levelInfo = new()
+    {
+        PeopleOnSceneMaxCount = 3,
+        IntervalMin = 3.4f,
+        IntervalMax = 4.1f,
+        FirstFewPeopleCount = 2,
+        LevelNumber = 0
+    };
+
     private void Awake()
     {
         game = Camera.main.GetComponent<Game>();
         game.AwakeAnyLevel();
     }
+
     private void Start()
     {
         game.StartAnyLevel();
-        if (levelNum == Game.TimelyAvailable) { Learning(); }
+        if (levelInfo.LevelNumber == Game.TimelyAvailable) { Learning(); }
         else
         {
             game.TabloOn();
             Invoke(nameof(Go), 5f);
         }
     }
+
     private void Update()
     {
         game.TimerForLevel();
     }
+
     public void AlmostGo()
     {
         lp.TurnLearnOff();
@@ -32,7 +45,9 @@ public class Level_1 : MonoBehaviour //кетчуп,сосиски,булки - 3 стрелки - доступ
         game.StoikaOnly.transform.GetChild(16).GetChild(0).GetComponent<BoxCollider2D>().enabled = true;
         Invoke(nameof(Go), 4f);
     }
-    public void Go() => game.TheFirstFew(3, 3.4f, 4.1f, 2, levelNum);
+
+    public void Go() => game.TheFirstFew(levelInfo);
+
     private void Learning()
     {
         game.learn = true;
