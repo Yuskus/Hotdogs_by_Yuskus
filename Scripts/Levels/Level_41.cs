@@ -23,7 +23,7 @@ public class Level_41 : MonoBehaviour
     private void Start()
     {
         game.StartAnyLevel();
-        if (Game.TimelyContinue == Game.TimelyAvailable) { Learning(); }
+        if (levelInfo.LevelNumber == Game.TimelyAvailable) { Learning(); }
         else
         {
             game.TabloOn();
