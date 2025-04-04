@@ -9,48 +9,66 @@ public class Money : MonoBehaviour, IPointerDownHandler
     private MoneySound sound;
     private int number;
     private int price;
-    private GameObject Parent, TextPref;
+    private GameObject CurrentParent, ParentOfThiefsMoney, TextPref;
+
     private void Awake()
     {
         game = Camera.main.GetComponent<Game>();
         dg = Camera.main.GetComponent<Drag>();
         number = transform.parent.GetSiblingIndex();
-        Parent = game.Interactive.transform.GetChild(2).gameObject;
+        CurrentParent = transform.parent.gameObject;
+        ParentOfThiefsMoney = game.Interactive.transform.GetChild(2).gameObject;
         sound = game.Interactive.GetComponent<MoneySound>();
     }
+
     private void OnEnable()
     {
         game.MoneyOnTable += 1;
     }
+
     public void OnPointerDown(PointerEventData eventData)
     {
         if (dg.isDragging) return;
-        if (transform.parent.gameObject == Parent) { MakeTextPref(); }
+        if (CurrentParent == ParentOfThiefsMoney)
+        {
+            GetThiefsMoney();
+        }
         else
         {
-            game.AllClients.GetComponent<HairList>().randomIndex.Add(number);
-            transform.parent.GetComponent<ParMoney>().WritingOutPrice(out price);
-            game.MySalary += price;
-            SetAct(number, true);
-            TextIs(number, price, "+");
-            Invoke(nameof(Vanish), 2f);
-            transform.gameObject.SetActive(false);
+            GetClientsMoney();
         }
-        sound.Play();
-        game.MoneyOnTable -= 1;
     }
+
+    private void GetThiefsMoney()
+    {
+        game.MySalary += price;
+        TextPref = Instantiate(game.TextPref, ParentOfThiefsMoney.transform, false);
+        TextPref.transform.localPosition = new Vector2(transform.localPosition.x, 3.75f);
+        TextPref.transform.GetComponent<TextMeshPro>().text = $"+{price}";
+        game.MoneyOnTable -= 1;
+        sound.Play();
+        Destroy(TextPref, 2f);
+        Destroy(transform.gameObject);
+    }
+
+    private void GetClientsMoney()
+    {
+        game.AllClients.GetComponent<HairList>().randomIndex.Add(number);
+        transform.parent.GetComponent<ParMoney>().WritingOutPrice(out price);
+        game.MySalary += price;
+        SetAct(number, true);
+        TextIs(number, price, "+");
+        game.MoneyOnTable -= 1;
+        sound.Play();
+        Invoke(nameof(Vanish), 2f);
+        transform.gameObject.SetActive(false);
+    }
+
     public void WritingInPrice(int value)
     {
         price = value;
     }
-    private void MakeTextPref()
-    {
-        game.MySalary += price;
-        TextPref = CreatingReturns(game.TextPref, Parent, new(transform.localPosition.x, 3.75f));
-        TextPref.transform.GetComponent<TextMeshPro>().text = $"+{price}";
-        Destroy(TextPref, 2f);
-        Destroy(transform.gameObject);
-    }
+
     private void Vanish()
     {
         TextIs(number, 0, "");

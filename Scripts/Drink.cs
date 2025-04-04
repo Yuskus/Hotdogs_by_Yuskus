@@ -5,21 +5,25 @@ public class Drink : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndDragH
 {
     private DraggingComponent drag;
     private Drag dg;
+    private MyStartPlace myStartPlace;
+    private MyData data;
     private SpriteRenderer spRen;
     private RaycastHit2D hit;
     private AudioClip audioClip;
     private AudioSource audioSource;
     private void Awake()
     {
-        if (Game.TimelyContinue < RecData.canCookDrink) { transform.parent.gameObject.SetActive(false); }
+        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        if (data.ContinueGame < RecData.canCookDrink) { transform.parent.gameObject.SetActive(false); }
     }
     private void Start()
     {
         drag = transform.parent.parent.GetComponent<DraggingComponent>();
         dg = Camera.main.GetComponent<Drag>();
-        spRen = GetComponent<SpriteRenderer>();
+        myStartPlace = transform.GetComponent<MyStartPlace>();
+        spRen = transform.GetComponent<SpriteRenderer>();
         audioClip = Resources.Load<AudioClip>("Sounds/drink");
-        audioSource = GetComponent<AudioSource>();
+        audioSource = transform.GetComponent<AudioSource>();
         audioSource.clip = audioClip;
     }
     public void OnPointerDown(PointerEventData eventData)
@@ -63,7 +67,7 @@ public class Drink : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndDragH
     }
     private void BackHome(bool drag)
     {
-        GetComponent<MyStartPlace>().BackHomeAsSelected();
+        myStartPlace.BackHomeAsSelected();
         dg.isDragging = drag;
     }
 }

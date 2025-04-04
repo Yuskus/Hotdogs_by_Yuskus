@@ -3,6 +3,7 @@ using UnityEngine;
 public class Level_6 : MonoBehaviour
 {
     private Game game;
+    private MyData data;
 
     private LearningPointer lp;
 
@@ -24,7 +25,8 @@ public class Level_6 : MonoBehaviour
     private void Start()
     {
         game.StartAnyLevel();
-        if (levelInfo.LevelNumber == Game.TimelyAvailable) { Learning(); }
+        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        if (levelInfo.LevelNumber == data.AvailableLevels) { Learning(); }
         else
         {
             game.TabloOn();

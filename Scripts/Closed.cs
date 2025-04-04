@@ -48,7 +48,7 @@ public class Closed : MonoBehaviour //38 check
     }
     private void IsClosed()
     {
-        data.RecSum(out allTimeSalary);
+        allTimeSalary = data.LvlRec.Sum();
         EndPanel.SetActive(true); //on endgame panel
         MySalary = Camera.main.GetComponent<Game>().MySalary; //save salary
         if (MySalary >= RecData.plans[levelNum]) { winLoseText = "Good day!"; youWin = true; }

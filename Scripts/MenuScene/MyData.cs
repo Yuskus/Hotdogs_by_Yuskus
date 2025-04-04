@@ -5,18 +5,22 @@ using UnityEngine;
 
 public class MyData : MonoBehaviour
 {
-    private int continueGame;
-    private int availableLevels;
-    private int[] lvlRec;
+    private int continueGame = 0;
+    private int availableLevels = 0;
+    private int[] lvlRec = new int[50];
     private readonly int levelsCount = 50;
+
+    private string fileName = "MySavedData.dat";
     private string path;
     private static GameObject myInstance;
+
     public int[] LvlRec
     {
         get { return lvlRec; }
         private set { lvlRec = value; }
     }
-    public int ContinueGame //55 (обнуление), 87 (подгрузка), 100 (сохранение), 112 (изменение)
+
+    public int ContinueGame
     {
         get { return continueGame; }
         set
@@ -25,7 +29,8 @@ public class MyData : MonoBehaviour
             else if (value == levelsCount) { RecData.youCompletedTheGame = true; }
         }
     }
-    public int AvailableLevels //56 (обнуление), 86 (подгрузка), 97 (сохранение)
+
+    public int AvailableLevels
     {
         get { return availableLevels; }
         set
@@ -34,31 +39,30 @@ public class MyData : MonoBehaviour
             else if (value == levelsCount) { RecData.youCompletedTheGame = true; }
         }
     }
+
     public void Start()
     {
-        path = Path.Combine(Application.persistentDataPath, "MySavedData.dat");
+        path = Path.Combine(Application.persistentDataPath, fileName);
         if (myInstance == null)
         {
+            CreateData();
             LoadData();
             myInstance = gameObject;
             DontDestroyOnLoad(gameObject);
         }
     }
-    public void RecSum(out int sum)
+
+    public void CreateData()
     {
-        sum = 0;
-        for (int i = 0; i < levelsCount; i++)
+        if (!File.Exists(path))
         {
-            sum += LvlRec[i];
+            BinaryFormatter bf = new();
+            using FileStream file = File.Create(path);
+            SaveMyData data = new(0, 0, new int[50]);
+            bf.Serialize(file, data);
         }
     }
-    public void SaveData()
-    {
-        BinaryFormatter bf = new();
-        using FileStream file = File.Create(path);
-        SaveMyData data = new(continueGame, availableLevels, LvlRec);
-        bf.Serialize(file, data);
-    }
+
     public void LoadData()
     {
         if (File.Exists(path))
@@ -66,18 +70,26 @@ public class MyData : MonoBehaviour
             BinaryFormatter bf = new();
             using FileStream file = File.Open(path, FileMode.Open);
             SaveMyData data = (SaveMyData)bf.Deserialize(file);
-            (continueGame, availableLevels, LvlRec) = data;
+            (ContinueGame, AvailableLevels, LvlRec) = data;
         }
     }
+
+    public void SaveData()
+    {
+        BinaryFormatter bf = new();
+        using FileStream file = File.Create(path);
+        SaveMyData data = new(ContinueGame, AvailableLevels, LvlRec);
+        bf.Serialize(file, data);
+    }
+
     public void ResetData()
     {
-        if (!File.Exists(path))
+        if (File.Exists(path))
         {
             File.Delete(path);
-            continueGame = 0;
-            availableLevels = 0;
-            lvlRec = new int[50];
         }
+
+        CreateData();
     }
 }
 
@@ -87,6 +99,7 @@ public class SaveMyData
     public int continueGame;
     public int availableLevels;
     public int[] lvlRec;
+
     public SaveMyData(int playNow, int playAvailable, int[] rec)
     {
         continueGame = playNow;

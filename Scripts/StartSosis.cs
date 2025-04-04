@@ -4,12 +4,14 @@ using UnityEngine.EventSystems;
 public class StartSosis : MonoBehaviour, IPointerDownHandler
 {
     private Drag dg;
+    private MyData data;
     private GameObject PlitaSosis;
     private void Start()
     {
+        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
         dg = Camera.main.GetComponent<Drag>();
         PlitaSosis = transform.parent.GetChild(1).gameObject;
-        if (Game.TimelyContinue == 0 && Game.TimelyAvailable == 0) { transform.gameObject.AddComponent<L_StartSosis>(); }
+        if (data.ContinueGame == 0 && data.AvailableLevels == 0) { transform.gameObject.AddComponent<L_StartSosis>(); }
     }
     public void OnPointerDown(PointerEventData eventData)
     {

@@ -5,12 +5,14 @@ public class StartSauceG : MonoBehaviour, IDragHandler, IPointerDownHandler, IEn
 {
     private DraggingComponent drag;
     private Drag dg;
+    private MyData data;
     private SpriteRenderer spRen;
     private RaycastHit2D hit;
     private AudioClip audioClipG;
     private void Start()
     {
-        if (Game.TimelyContinue < RecData.canCookSauseG) { transform.gameObject.SetActive(false); }
+        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        if (data.ContinueGame < RecData.canCookSauseG) { transform.gameObject.SetActive(false); }
         drag = transform.parent.GetComponent<DraggingComponent>();
         dg = Camera.main.GetComponent<Drag>();
         spRen = GetComponent<SpriteRenderer>();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TMPro;
 using UnityEngine;
@@ -30,8 +31,6 @@ public class Game : MonoBehaviour //check
     private readonly string[] names = new string[5] { "DrinkClone", "Free", "HotDog", "Burger", "ColaClone" };
     public readonly int[] bonusPrice = new int[16] { 0, 10, 10, 20, 15, 25, 25, 35, 30, 40, 40, 50, 45, 55, 55, 65 };
     public Dictionary<string, Sprite> ForWish { get; private set; }
-    public static int TimelyContinue { get; private set; }
-    public static int TimelyAvailable { get; private set; }
     private float TimerDay
     {
         get { return timerDay; }
@@ -71,8 +70,6 @@ public class Game : MonoBehaviour //check
     private void Awake()
     {
         data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
-        TimelyAvailable = data.AvailableLevels;
-        TimelyContinue = data.ContinueGame;
         indexOfLevel = data.ContinueGame + 1; //reeading
         transform.gameObject.AddComponent(Type.GetType("Level_" + indexOfLevel)); //MenuButtons 44
     }
@@ -124,7 +121,7 @@ public class Game : MonoBehaviour //check
         Plan.GetComponent<Text>().text = myPlanDisplay.ToString();
         myRecordDisplay.Append("Record: " + data.LvlRec[data.ContinueGame]);
         Record.GetComponent<Text>().text = myRecordDisplay.ToString();
-        data.RecSum(out AllTimeSalary);
+        AllTimeSalary = data.LvlRec.Sum();
         moneyPan = TextMoney.GetComponent<Text>();
         timePan = Timer.GetComponent<Text>();
         TimerDay = 120f;
@@ -133,7 +130,10 @@ public class Game : MonoBehaviour //check
     public void TabloOn() //главный скрипт для уровней 
     {
         Canvas.transform.GetChild(3).gameObject.SetActive(true);
-        Canvas.transform.GetChild(3).GetChild(0).GetComponent<TextMeshProUGUI>().text = $"Level: {indexOfLevel} \nPlan: {RecData.plans[data.ContinueGame]} \nTime: 2:00 \n\nGood luck!";
+        Canvas.transform.GetChild(3).GetChild(0).GetComponent<TextMeshProUGUI>().text = $"Level: {indexOfLevel} \n" +
+                                                                                        $"Plan: {RecData.plans[data.ContinueGame]} \n" +
+                                                                                        $"Time: 2:00 \n" +
+                                                                                        $"\nGood luck!";
         Invoke(nameof(TabloOff), 3f);
     }
     private void TabloOff() => Canvas.transform.GetChild(3).gameObject.SetActive(false); //start table
@@ -212,7 +212,7 @@ public class Game : MonoBehaviour //check
     {
         if (peopleInCafe == 0)
         {
-            if (moneyOnTable == 0)
+            if (MoneyOnTable == 0)
             {
                 if (Learn.activeInHierarchy) { Learn.SetActive(false); }
                 ClosePanel.GetComponent<Closed>().TheCafeIsClosing();

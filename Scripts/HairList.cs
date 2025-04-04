@@ -29,8 +29,19 @@ public class HairList : MonoBehaviour
     private void Start()
     {
         hair = Resources.LoadAll<Sprite>("Sprites/People/Haircuts");
-        for (int i = 0; i < 7; i++) { haircutsMan.Add(i); }
-        for (int i = 7; i < 13; i++) { haircutsWoman.Add(i); }
+
+        for (int i = 0; i < 13; i++)
+        {
+            if (i < 7)
+            {
+                haircutsMan.Add(i);
+            }
+            else
+            {
+                haircutsWoman.Add(i);
+            }
+        }
+
         for (int i = 0; i < 6; i++)
         {
             faces[0,0,i] = Resources.Load<Sprite>("Sprites/People/Faces/blue eyes/01. black/"+i);
@@ -42,6 +53,7 @@ public class HairList : MonoBehaviour
             faces[1,2,i] = Resources.Load<Sprite>("Sprites/People/Faces/brown eyes/03. red/"+i);
             faces[1,3,i] = Resources.Load<Sprite>("Sprites/People/Faces/brown eyes/04. brown/"+i);
         }
+
         audioClipM = Resources.LoadAll<AudioClip>("Sounds/ClientsSounds/man");
         audioClipW = Resources.LoadAll<AudioClip>("Sounds/ClientsSounds/woman");
     }

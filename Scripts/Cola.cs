@@ -5,21 +5,25 @@ public class Cola : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndDragHa
 {
     private DraggingComponent drag;
     private Drag dg;
+    private MyStartPlace myStartPlace;
+    private MyData data;
     private SpriteRenderer spRen;
     private RaycastHit2D hit;
     private AudioClip audioClip;
     private AudioSource audioSource;
     private void Awake()
     {
-        if (Game.TimelyContinue < RecData.canCookCola) { transform.parent.gameObject.SetActive(false); }
+        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        if (data.ContinueGame < RecData.canCookCola) { transform.parent.gameObject.SetActive(false); }
     }
     private void Start()
     {
         drag = transform.parent.parent.GetComponent<DraggingComponent>();
         dg = Camera.main.GetComponent<Drag>();
-        spRen = GetComponent<SpriteRenderer>();
+        myStartPlace = transform.GetComponent<MyStartPlace>();
+        spRen = transform.GetComponent<SpriteRenderer>();
         audioClip = Resources.Load<AudioClip>("Sounds/cola");
-        audioSource = GetComponent<AudioSource>();
+        audioSource = transform.GetComponent<AudioSource>();
         audioSource.clip = audioClip;
     }
     public void OnPointerDown(PointerEventData eventData)
@@ -53,18 +57,17 @@ public class Cola : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndDragHa
             hit = drag.Ray(eventData.position);
             if (hit.collider == null) { BackHome(false); return; }
             else if (hit.transform.parent.gameObject.name == "OnScene") { Checking(); }
-            else { BackHome(false); }
+            BackHome(false);
         }
         else { BackHome(true); }
     }
     private void Checking()
     {
         hit.transform.GetComponent<AnyPerson>().CheckingForDrags();
-        dg.isDragging = false;
     }
     private void BackHome(bool drag)
     {
-        GetComponent<MyStartPlace>().BackHomeAsSelected();
+        myStartPlace.BackHomeAsSelected();
         dg.isDragging = drag;
     }
 }

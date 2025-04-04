@@ -5,6 +5,7 @@ public class CreatedSosis : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
 {
     private DraggingComponent drag;
     private Drag dg;
+    private MyData data;
     private int i;
     private float time;
     private bool timer;
@@ -17,7 +18,8 @@ public class CreatedSosis : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
     {
         drag = transform.parent.parent.GetComponent<DraggingComponent>();
         dg = Camera.main.GetComponent<Drag>();
-        if (Game.TimelyContinue == 0 && Game.TimelyAvailable == 0 && transform.GetSiblingIndex() == 0)
+        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        if (data.ContinueGame == 0 && data.AvailableLevels == 0 && transform.GetSiblingIndex() == 0)
         {
             transform.gameObject.AddComponent<L_CreatedSosis>();
         }

@@ -4,10 +4,12 @@ using UnityEngine.EventSystems;
 public class StartKotleta : MonoBehaviour, IPointerDownHandler
 {
     private Drag dg;
+    private MyData data;
     private GameObject[] Kotletas;
     private void Start()
     {
-        if (Game.TimelyContinue < RecData.canCookBurger) { transform.gameObject.SetActive(false); }
+        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        if (data.ContinueGame < RecData.canCookBurger) { transform.gameObject.SetActive(false); }
         dg = Camera.main.GetComponent<Drag>();
         Kotletas = new GameObject[]
         {

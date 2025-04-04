@@ -4,10 +4,12 @@ using UnityEngine.EventSystems;
 public class StartBurger : MonoBehaviour, IPointerDownHandler
 {
     private Drag dg;
+    private MyData data;
     private GameObject[] Burgers;
     private void Start()
     {
-        if (Game.TimelyContinue < RecData.canCookBurger) { transform.gameObject.SetActive(false); }
+        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        if (data.ContinueGame < RecData.canCookBurger) { transform.gameObject.SetActive(false); }
         dg = Camera.main.GetComponent<Drag>();
         Burgers = new GameObject[]
         {

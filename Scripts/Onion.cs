@@ -7,7 +7,7 @@ public class Onion : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerDow
     private Drag dg;
     private int i;
     private float time;
-    private bool timer, added;
+    private bool timer;
     private SpriteRenderer sR, childSR;
     private RaycastHit2D hit;
     private AudioClip audioClip, dzinn, burntOut;

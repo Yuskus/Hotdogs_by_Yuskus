@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 public class StartPotato : MonoBehaviour, IPointerDownHandler
 {
     private Drag dg;
+    private MyData data;
     private SpriteRenderer childSR;
     private BoxCollider2D col;
     private Sprite FreeBoxEmpty, FreeBoxFull;
@@ -12,7 +13,8 @@ public class StartPotato : MonoBehaviour, IPointerDownHandler
     private AudioSource audioSource;
     private void Start()
     {
-        if (Game.TimelyContinue < RecData.canCookFree || (Game.TimelyContinue < 15 && Game.TimelyContinue > 9))
+        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        if (data.ContinueGame < RecData.canCookFree || (data.ContinueGame < 15 && data.ContinueGame > 9))
         {
             transform.gameObject.SetActive(false);
         }

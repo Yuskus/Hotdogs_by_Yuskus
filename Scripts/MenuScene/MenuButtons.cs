@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using System.Linq;
 
 public class MenuButtons : MonoBehaviour //
 {
@@ -90,7 +91,7 @@ public class MenuButtons : MonoBehaviour //
     }
     public void ButtonForAllTime()
     {
-        data.RecSum(out allTimeSalary);
+        allTimeSalary = data.LvlRec.Sum();
         Panel4.transform.GetChild(0).GetComponent<Text>().text = "Your Salary For All Time:\n\n" + allTimeSalary;
     }
     public void ButtonSettingsOrClosePanel1()

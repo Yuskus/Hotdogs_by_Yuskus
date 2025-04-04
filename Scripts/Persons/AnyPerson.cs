@@ -5,13 +5,17 @@ using UnityEngine.EventSystems;
 public class AnyPerson : MonoBehaviour, IPointerDownHandler //RandomIndex, Timer
 {
     private Game game;
+    private MyData data;
     private DraggingComponent drag;
     private Drag dg;
     private HairList hr;
     private FoodCode fc;
+
+    private GameObject AllClients;
+    private GameObject AtHome, OnScene;
     public int RandomIndex { get; private set; }
     private int checkMask = 1;
-    private int sign, index, state, indexOfLevel; //локальные индексы для методов
+    private int sign, index, state; //локальные индексы для методов
     private int price, foodCode, walkLayer, standLayer, guiltyLayer, runLayer, eyeColor, eyebrowColor;
     public float Timer { get; private set; }
     private float sinusTimer, amp, freq, maxAmp, runSpeed, walkSpeed, startSpeed, limit;
@@ -31,9 +35,13 @@ public class AnyPerson : MonoBehaviour, IPointerDownHandler //RandomIndex, Timer
     private void Awake()
     {
         game = Camera.main.GetComponent<Game>();
-        drag = game.StoikaOnly.GetComponent<DraggingComponent>();
+        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        drag = GameObject.FindGameObjectWithTag("Table").GetComponent<DraggingComponent>();
         dg = Camera.main.GetComponent<Drag>();
-        hr = game.AllClients.GetComponent<HairList>();
+        AllClients = GameObject.FindGameObjectWithTag("Player");
+        AtHome = AllClients.transform.GetChild(0).gameObject;
+        OnScene = AllClients.transform.GetChild(1).gameObject;
+        hr = AllClients.GetComponent<HairList>();
         col = GetComponent<BoxCollider2D>();
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
@@ -43,14 +51,15 @@ public class AnyPerson : MonoBehaviour, IPointerDownHandler //RandomIndex, Timer
         bodySR = transform.GetChild(0).GetComponent<SpriteRenderer>();
         faceSR = transform.GetChild(1).GetComponent<SpriteRenderer>();
         hairSR = transform.GetChild(2).GetComponent<SpriteRenderer>();
-        transform.gameObject.AddComponent(System.Type.GetType("Pers_" + game.indexOfLevel));
+        transform.gameObject.AddComponent(System.Type.GetType($"Pers_{data.ContinueGame + 1}"));
     }
     public void AlwaysAtStart(float factorOfWalkSpeed, float runSpeed, float bonusPayLimit, int procentOfGoodPeople) //при вызове клиента на сцену в методе он энейбл
     {
-        transform.SetParent(game.OnScene.transform);
+        transform.SetParent(OnScene.transform);
         transform.localPosition = Random.Range(0, 2) == 0 ? Vector2.zero : new(27, 0);
         RandomIndex = hr.randomIndex.Count == 0 ? 6 : hr.randomIndex[Random.Range(0, hr.randomIndex.Count)];
         DidNotStopYet = true;
+        moving = Vector2.zero;
         PlaceOfMyDeath = transform.localPosition.x == 0 ? new Vector2(27, 0) : Vector2.zero;
         if (RandomIndex != 6)
         {

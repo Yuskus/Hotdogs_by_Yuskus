@@ -5,6 +5,7 @@ public class CreatedBulka : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
 {
     private DraggingComponent drag;
     private Drag dg;
+    private MyData data;
     private SpriteRenderer spRen;
     private RaycastHit2D hit;
     private bool addedK, addedG, addedO;
@@ -15,7 +16,8 @@ public class CreatedBulka : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
     {
         drag = transform.parent.parent.GetComponent<DraggingComponent>();
         dg = Camera.main.GetComponent<Drag>();
-        if (Game.TimelyContinue == 0 && Game.TimelyAvailable == 0 && transform.GetSiblingIndex() == 0) { transform.gameObject.AddComponent<L_CreatedBulka>(); }
+        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        if (data.ContinueGame == 0 && data.AvailableLevels == 0 && transform.GetSiblingIndex() == 0) { transform.gameObject.AddComponent<L_CreatedBulka>(); }
         spRen = GetComponent<SpriteRenderer>();
         son = new SpriteRenderer[3];
         for (int i = 0; i < 3; i++) { son[i] = transform.GetChild(i).GetComponent<SpriteRenderer>(); }

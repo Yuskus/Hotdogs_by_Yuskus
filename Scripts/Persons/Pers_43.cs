@@ -49,7 +49,7 @@ public class Pers_43 : MonoBehaviour
             pers.RandomWish(Random.Range(1, 3), 8);
             pers.RandomWish(Random.Range(1, 6), 8);
             pers.RandomWish(Random.Range(3, 6), 2);
-            pers.RandomWish(Random.Range(9, 11), 2);
+            pers.RandomWish(Random.Range(8, 10), 2);
         }
     }
 }
