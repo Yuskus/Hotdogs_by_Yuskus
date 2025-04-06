@@ -24,6 +24,7 @@ public class DraggingComponent : MonoBehaviour
     private AudioClip audioClipBulka;
     private AudioSource audioSourceBulka;
     public AudioSource audioSourceK, audioSourceG;
+
     private void Awake()
     {
         cam = Camera.main;
@@ -31,6 +32,7 @@ public class DraggingComponent : MonoBehaviour
         HOsr = transform.GetChild(15).GetComponent<SpriteRenderer>();
         HOtr = transform.GetChild(15).GetComponent<Transform>();
     }
+
     private void Start()
     {
         BulkaHotDogSprite = Resources.Load<Sprite>("Sprites/Bulochka");
@@ -49,24 +51,31 @@ public class DraggingComponent : MonoBehaviour
         selection = new();
         SO_sprites = new Sprite[7];
         audioSourceBulka.clip = audioClipBulka;
+
         for (int i = 0; i < 4; i++)
         {
             sosiska[i] = Resources.Load<Sprite>("Sprites/Sosis" + i);
             kotleta[i] = Resources.Load<Sprite>("Sprites/Kotleta" + i);
             hotdog[i] = Resources.Load<Sprite>("Sprites/HotDog" + i);
             burger[i] = Resources.Load<Sprite>("Sprites/Burger" + i);
-            if (i != 3) { onion[i] = Resources.Load<Sprite>("Sprites/PanOnion" + (i+1)); }
+            if (i != 3)
+            {
+                onion[i] = Resources.Load<Sprite>("Sprites/PanOnion" + (i+1));
+            }
         }
+
         SO_sprites = Resources.LoadAll<Sprite>("Sprites/So");
         ForSelectingList();
         ForAddingSprites();
         inHand = SortingLayer.NameToID("InHand");
         onTable = SortingLayer.NameToID("OnTable");
     }
+
     public void OnEnable()
     {
         dg.Choised += ForSelecting;
     }
+
     public void ForSelecting() //компонент перетаскивания
     {
         if (dg.SelectedObject == dg.Zero)
@@ -77,51 +86,95 @@ public class DraggingComponent : MonoBehaviour
         HOsr.sprite = selection[dg.SelectedObject.name];
         HOtr.SetPositionAndRotation(dg.SelectedObject.transform.position, dg.SelectedObject.transform.rotation);
     }
+
     public void MousePos(GameObject thisObj, Vector2 pos) //компонент перетаскивания, перетаскивание объекта-ссылки мышью, пальцем
     {
         m2d = cam.ScreenToWorldPoint(pos);
         thisObj.transform.position = m2d;
         HOtr.position = dg.SelectedObject.transform.position;
     }
+
     public void AddSauce(GameObject obj, SpriteRenderer sR, ref bool addedK, ref bool addedG, ref bool addedO) //компонент перетаскивания, добавляет соус на хот дог/бургер
     {
-        if (sR.sprite.name is "Bulochka" or "BulkaBurger") { return; }
+        if (sR.sprite.name == "Bulochka" || sR.sprite.name == "BulkaBurger") return;
+
         switch (dg.SelectedObject.name)
         {
-            case "StartSauceK": if (!addedK) { ForAddingSauces(obj, 0, sR, 1, audioSourceK); addedK = true; } break;
-            case "StartSauceG": if (!addedG) { ForAddingSauces(obj, 1, sR, 2, audioSourceG); addedG = true; } break;
-            case "Onion": if (!addedO)
+            case "StartSauceK":
+                if (!addedK)
+                {
+                    ForAddingSauces(obj, 0, sR, 1, audioSourceK);
+                    addedK = true;
+                }
+                break;
+
+            case "StartSauceG":
+                if (!addedG)
+                {
+                    ForAddingSauces(obj, 1, sR, 2, audioSourceG);
+                    addedG = true;
+                }
+                break;
+
+            case "Onion":
+                if (!addedO)
                 {
                     int i = System.Array.IndexOf(onion, dg.SelectedObject.GetComponent<SpriteRenderer>().sprite);
                     obj.transform.GetChild(2).gameObject.SetActive(true);
-                    if (sR.gameObject.name == "HotDog") { obj.transform.GetChild(2).GetComponent<SpriteRenderer>().sprite = O_HD_added[i]; }
-                    else if (sR.gameObject.name == "Burger") { obj.transform.GetChild(2).GetComponent<SpriteRenderer>().sprite = O_B_added[i]; }
+
+                    if (sR.gameObject.name == "HotDog")
+                    {
+                        obj.transform.GetChild(2).GetComponent<SpriteRenderer>().sprite = O_HD_added[i];
+                    }
+                    else if (sR.gameObject.name == "Burger")
+                    {
+                        obj.transform.GetChild(2).GetComponent<SpriteRenderer>().sprite = O_B_added[i];
+                    }
+
                     dg.SelectedObject.GetComponent<MyStartPlace>().BackHomeAndOff_Free();
-                    if (i == 1) { sR.gameObject.GetComponent<FoodCode>().index += RecData.Code_Onion; }
+
+                    if (i == 1)
+                    {
+                        sR.gameObject.GetComponent<FoodCode>().Index += RecData.Code_Onion;
+                    }
+
                     addedO = true;
                 }
                 break;
         }
     }
+
     private void ForAddingSauces(GameObject obj, int index, SpriteRenderer sR, int foodCode, AudioSource audio)
     {
         obj.transform.GetChild(index).gameObject.SetActive(true);
-        sR.gameObject.GetComponent<FoodCode>().index += foodCode;
+        sR.gameObject.GetComponent<FoodCode>().Index += foodCode;
         audio.Play();
     }
+
     public void MakeFoodDone(string name, SpriteRenderer sR, Sprite[] notyet, Sprite[] done) //компонент перетаскивания, проверяет прожарку (сосиски/котлеты), добавляет в булку
     {
-        if (dg.SelectedObject.name == name & (sR.sprite.name is "Bulochka" or "BulkaBurger"))
+        if (dg.SelectedObject.name == name & (sR.sprite.name == "Bulochka" || sR.sprite.name == "BulkaBurger"))
         {
             int i = System.Array.IndexOf(notyet, dg.SelectedObject.GetComponent<SpriteRenderer>().sprite);
             sR.sprite = done[i];
             audioSourceBulka.Play();
             dg.SelectedObject.GetComponent<MyStartPlace>().BackHomeAndOff_Free();
             dg.SelectedObject = sR.transform.gameObject;
-            if (i == 2) { dg.SelectedObject.GetComponent<FoodCode>().index += RecData.Code_Doneness; }
+
+            if (i == 2)
+            {
+                dg.SelectedObject.GetComponent<FoodCode>().Index += RecData.Code_Doneness;
+            }
         }
-        else { if (dg.SelectedObject != dg.Zero) { dg.SelectedObject.GetComponent<MyStartPlace>().BackHomeAsSelected(); } }
+        else
+        {
+            if (dg.SelectedObject != dg.Zero)
+            {
+                dg.SelectedObject.GetComponent<MyStartPlace>().BackHomeAsSelected();
+            }
+        }
     }
+
     public RaycastHit2D Ray(Vector2 pos) //компонент перетаскивания, пускает луч
     {
         dg.SelectedObject.transform.GetComponent<BoxCollider2D>().enabled = false;
@@ -129,17 +182,25 @@ public class DraggingComponent : MonoBehaviour
         dg.SelectedObject.transform.GetComponent<BoxCollider2D>().enabled = true;
         return hit;
     }
+
     public void TakeObjectInHand(SpriteRenderer sR)
     {
         sR.sortingLayerID = inHand;
         HOsr.sortingLayerID = onTable;
     }
+
     public void TakeObjectInHand(SpriteRenderer sR, SpriteRenderer[] sons)
     {
         sR.sortingLayerID = inHand;
-        for (int i = 0; i < 3; i++) { sons[i].sortingLayerID = inHand; }
+
+        for (int i = 0; i < 3; i++)
+        {
+            sons[i].sortingLayerID = inHand;
+        }
+
         HOsr.sortingLayerID = onTable;
     }
+
     private void ForSelectingList()
     {
         selection.Add("Burger", SO_sprites[0]);
@@ -153,6 +214,7 @@ public class DraggingComponent : MonoBehaviour
         selection.Add("StartSauceG", SO_sprites[7]);
         selection.Add("Sosis", SO_sprites[8]);
     }
+
     private void ForAddingSprites()
     {
         O_B_added[0] = Resources.Load<Sprite>("Sprites/AddedO_B_1");
@@ -168,6 +230,7 @@ public class DraggingComponent : MonoBehaviour
         B_added[1] = Resources.Load<Sprite>("Sprites/AddedG_B");
         B_added[2] = O_B_added[1];
     }
+
     public void OnDisable()
     {
         dg.Choised -= ForSelecting;

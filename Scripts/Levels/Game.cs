@@ -25,7 +25,7 @@ public class Game : MonoBehaviour //check
     public Sprite[] forClientsWish = new Sprite[5];
     private WaitForSeconds waitForSecond, halfSecond;
     public readonly Vector2[] PlacePeople = new Vector2[5] { new(5f, 0f), new(9.5f, 0f), new(14f, 0f), new(18.5f, 0f), new(23f, 0f) }; //€чейки дл€ людей
-    public readonly string[] forEatPhase = new string[10] { "Nothing", "HotDog", "Burger", "DrinkClone", "Nothing", "Free", "ColaClone", "Nothing", "DrinkClone", "ColaClone" };
+    public readonly string[] FoodForRandom = new string[10] { "Nothing", "HotDog", "Burger", "DrinkClone", "Nothing", "Free", "ColaClone", "Nothing", "DrinkClone", "ColaClone" };
     public readonly Dictionary <string, int> priceOfFood = new() { { "HotDog", 15 }, { "Burger", 20 }, { "DrinkClone", 45 }, { "Free", 50 }, { "ColaClone", 50 } };
     private readonly string[] paths = new string[5] { "Sprites/Drink", "Sprites/DoneFree", "Sprites/HotDog2", "Sprites/Burger2", "Sprites/Cola" };
     private readonly string[] names = new string[5] { "DrinkClone", "Free", "HotDog", "Burger", "ColaClone" };

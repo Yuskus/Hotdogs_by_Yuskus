@@ -58,7 +58,7 @@ public class Level_21 : MonoBehaviour //горчица - 1 стрелка - доступный равен 8
         lp = game.LearningPointer.GetComponent<LearningPointer>();
         game.StoikaOnly.transform.GetChild(16).GetChild(0).GetComponent<BoxCollider2D>().enabled = false;
         lp.Press(game.SauceG);
-        lp.WriteText("Обратите внимание на новый ингридиент: горчица!");
+        lp.WriteText("Обратите внимание на новый ингредиент: горчица!");
         Invoke(nameof(AlmostGo), 3.5f);
     }
 }

@@ -23,10 +23,10 @@ public class MenuButtons : MonoBehaviour //
         Panel2 = Panel1.transform.GetChild(4).gameObject;
         Panel3 = Panel1.transform.GetChild(5).gameObject;
         Panel4 = Panel1.transform.GetChild(6).gameObject;
-        PanelLevels = Canvas.transform.GetChild(4).gameObject;
+        PanelLevels = Canvas.transform.GetChild(5).gameObject;
         MovingForest = GameObject.FindGameObjectWithTag("Table");
         Fire = GameObject.FindGameObjectWithTag("Fire");
-        ButtonFire = Canvas.transform.GetChild(5).gameObject;
+        ButtonFire = Canvas.transform.GetChild(4).gameObject;
         FonTr = MovingForest.transform.GetChild(0).GetComponent<Transform>();
         Fon2Tr = MovingForest.transform.GetChild(1).GetComponent<Transform>();
         circle1 = MovingForest.transform.GetChild(2).GetComponent<Transform>();

@@ -19,7 +19,7 @@ public class MyStartPlace : MonoBehaviour
         table = SortingLayer.NameToID("Table");
         onTable = SortingLayer.NameToID("OnTable");
         children = new SpriteRenderer[3];
-        if (transform.gameObject.name is "HotDog" or "Burger")
+        if (transform.gameObject.name == "HotDog" || transform.gameObject.name == "Burger")
         {
             for (int i = 0; i < 3; i++) { children[i] = transform.GetChild(i).GetComponent<SpriteRenderer>(); }
         }
@@ -32,7 +32,8 @@ public class MyStartPlace : MonoBehaviour
         spRen.sortingLayerID = onTable;
         Back = transform.gameObject.name switch
         {
-            "HotDog" or "Burger" => BackHomeAndOff,
+            "HotDog" => BackHomeAndOff,
+            "Burger" => BackHomeAndOff,
             "Free" => BackHomeAndOff_Free,
             _ => BackHomeAsSelected
         };

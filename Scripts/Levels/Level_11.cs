@@ -58,7 +58,7 @@ public class Level_11 : MonoBehaviour
         lp = game.LearningPointer.GetComponent<LearningPointer>();
         game.StoikaOnly.transform.GetChild(16).GetChild(0).GetComponent<BoxCollider2D>().enabled = false;
         lp.Press(game.StoikaOnly.transform.GetChild(7).gameObject);
-        lp.WriteText("Обратите внимание на новые ингридиенты: \nбулочки и котлеты для бургеров!");
+        lp.WriteText("Обратите внимание на новые ингредиенты: \nбулочки и котлеты для бургеров!");
         Invoke(nameof(Learning2), 3f);
     }
 

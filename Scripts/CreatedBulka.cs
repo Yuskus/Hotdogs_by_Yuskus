@@ -33,7 +33,7 @@ public class CreatedBulka : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
         addedG = false;
         addedO = false;
         audioSource.Play();
-        GetComponent<FoodCode>().index = RecData.Code_HotDog;
+        GetComponent<FoodCode>().Index = RecData.Code_HotDog;
     }
     public void OnPointerDown(PointerEventData eventData)
     {

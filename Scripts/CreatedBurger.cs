@@ -30,7 +30,7 @@ public class CreatedBurger : MonoBehaviour, IDragHandler, IPointerDownHandler, I
         addedG = false;
         addedO = false;
         audioSource.Play();
-        GetComponent<FoodCode>().index = RecData.Code_Burger;
+        GetComponent<FoodCode>().Index = RecData.Code_Burger;
     }
     public void OnPointerDown(PointerEventData eventData)
     {
