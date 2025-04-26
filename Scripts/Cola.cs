@@ -6,15 +6,12 @@ public class Cola : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndDragHa
     private DraggingComponent drag;
     private Drag dg;
     private MyStartPlace myStartPlace;
-    private MyData data;
     private SpriteRenderer spRen;
-    private RaycastHit2D hit;
-    private AudioClip audioClip;
     private AudioSource audioSource;
     private void Awake()
     {
-        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
-        if (data.ContinueGame < RecData.canCookCola) { transform.parent.gameObject.SetActive(false); }
+        MyData data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        transform.parent.gameObject.SetActive(data.ContinueGame >= RecData.canCookCola);
     }
     private void Start()
     {
@@ -22,9 +19,8 @@ public class Cola : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndDragHa
         dg = Camera.main.GetComponent<Drag>();
         myStartPlace = transform.GetComponent<MyStartPlace>();
         spRen = transform.GetComponent<SpriteRenderer>();
-        audioClip = Resources.Load<AudioClip>("Sounds/cola");
         audioSource = transform.GetComponent<AudioSource>();
-        audioSource.clip = audioClip;
+        audioSource.clip = Resources.Load<AudioClip>("Sounds/cola");
     }
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -36,7 +32,7 @@ public class Cola : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndDragHa
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (eventData.pointerId == 0 && !dg.isDragging)
+        if (eventData.pointerId == 0 && dg.SelectedObject == transform.gameObject && !dg.isDragging)
         {
             drag.TakeObjectInHand(spRen);
             dg.isDragging = true;
@@ -46,24 +42,33 @@ public class Cola : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndDragHa
     {
         if (eventData.pointerId == 0 && dg.isDragging)
         {
-            if (dg.SelectedObject == transform.gameObject) { drag.MousePos(transform.gameObject, eventData.position); }
-            else { dg.isDragging = false; }
+            if (dg.SelectedObject == transform.gameObject)
+            {
+                drag.MousePos(transform.gameObject, eventData.position);
+            }
+            else
+            {
+                dg.isDragging = false;
+            }
         }
     }
     public void OnEndDrag(PointerEventData eventData)
     {
         if (dg.SelectedObject == transform.gameObject)
         {
-            hit = drag.Ray(eventData.position);
-            if (hit.collider == null) { BackHome(false); return; }
-            else if (hit.transform.parent.gameObject.name == "OnScene") { Checking(); }
+            RaycastHit2D hit = drag.Ray(eventData.position);
+
+            if (hit.collider != null && hit.transform.parent.gameObject.name == "OnScene")
+            {
+                hit.transform.GetComponent<AnyPerson>().CheckingForDrags();
+            }
+
             BackHome(false);
         }
-        else { BackHome(true); }
-    }
-    private void Checking()
-    {
-        hit.transform.GetComponent<AnyPerson>().CheckingForDrags();
+        else
+        {
+            BackHome(true);
+        }
     }
     private void BackHome(bool drag)
     {

@@ -9,7 +9,6 @@ public class CreatedKotlet : MonoBehaviour, IDragHandler, IPointerDownHandler, I
     private float time;
     private bool timer;
     private SpriteRenderer sR, childSR;
-    private RaycastHit2D hit;
     private AudioClip audioClip, dzinn, burntOut;
     private AudioSource audioSource;
     private Animation anim;
@@ -71,7 +70,7 @@ public class CreatedKotlet : MonoBehaviour, IDragHandler, IPointerDownHandler, I
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (eventData.pointerId == 0 && !dg.isDragging)
+        if (eventData.pointerId == 0 && dg.SelectedObject == transform.gameObject && !dg.isDragging)
         {
             drag.TakeObjectInHand(sR);
             timer = false;
@@ -89,24 +88,33 @@ public class CreatedKotlet : MonoBehaviour, IDragHandler, IPointerDownHandler, I
     public void OnEndDrag(PointerEventData eventData)
     {
         if (dg.SelectedObject == transform.gameObject)
-        {
-            hit = drag.Ray(eventData.position);
-            if (hit.collider == null) { BackHome(false); return; }
-            else if (hit.transform.gameObject.name == "Burger") { FoodIsDone(); }
-            else if (hit.transform.gameObject.name == "Trash") { Trash(); }
-            else { BackHome(false); }
+        { 
+            if (drag.Ray(eventData.position) is RaycastHit2D hit)
+            {
+                switch (hit.transform.gameObject.name)
+                {
+                    case "Burger":
+                        {
+                            drag.MakeFoodDone("Kotlet", hit.transform.GetComponent<SpriteRenderer>(), drag.kotleta, drag.burger);
+                            break;
+                        }
+                    case "Trash":
+                        {
+                            hit.transform.GetComponent<Trash>().TrashForDrags();
+                            break;
+                        }
+                }
+
+                dg.isDragging = false;
+                return;
+            }
+
+            BackHome(false);
         }
-        else { BackHome(true); }
-    }
-    private void FoodIsDone()
-    {
-        drag.MakeFoodDone("Kotlet", hit.transform.GetComponent<SpriteRenderer>(), drag.kotleta, drag.burger);
-        dg.isDragging = false;
-    }
-    private void Trash()
-    {
-        hit.transform.GetComponent<Trash>().TrashForDrags();
-        dg.isDragging = false;
+        else
+        {
+            BackHome(true);
+        }
     }
     private void BackHome(bool drag)
     {

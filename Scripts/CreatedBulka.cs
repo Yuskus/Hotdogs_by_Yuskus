@@ -5,30 +5,31 @@ public class CreatedBulka : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
 {
     private DraggingComponent drag;
     private Drag dg;
-    private MyData data;
     private SpriteRenderer spRen;
-    private RaycastHit2D hit;
     private bool addedK, addedG, addedO;
     private SpriteRenderer[] son;
-    private AudioClip audioClip;
     private AudioSource audioSource;
     private void Awake()
     {
         drag = transform.parent.parent.GetComponent<DraggingComponent>();
         dg = Camera.main.GetComponent<Drag>();
-        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
-        if (data.ContinueGame == 0 && data.AvailableLevels == 0 && transform.GetSiblingIndex() == 0) { transform.gameObject.AddComponent<L_CreatedBulka>(); }
+        MyData data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        if (data.ContinueGame == 0 && data.AvailableLevels == 0 && transform.GetSiblingIndex() == 0)
+        {
+            transform.gameObject.AddComponent<L_CreatedBulka>();
+        }
         spRen = GetComponent<SpriteRenderer>();
         son = new SpriteRenderer[3];
         for (int i = 0; i < 3; i++) { son[i] = transform.GetChild(i).GetComponent<SpriteRenderer>(); }
-        audioClip = Resources.Load<AudioClip>("Sounds/add hotdog");
         audioSource = GetComponent<AudioSource>();
-        audioSource.clip = audioClip;
+        audioSource.clip = Resources.Load<AudioClip>("Sounds/add hotdog");
     }
     private void OnEnable()
     {
         spRen.sprite = drag.BulkaHotDogSprite;
-        for (int i = 0; i < 3; i++) { transform.GetChild(i).gameObject.SetActive(false); }
+        transform.GetChild(0).gameObject.SetActive(false);
+        transform.GetChild(1).gameObject.SetActive(false);
+        transform.GetChild(2).gameObject.SetActive(false);
         addedK = false;
         addedG = false;
         addedO = false;
@@ -39,7 +40,10 @@ public class CreatedBulka : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
     {
         if (!dg.isDragging)
         {
-            if (spRen.sprite.name == "Bulochka") { drag.MakeFoodDone("Sosis", spRen, drag.sosiska, drag.hotdog); }
+            if (spRen.sprite.name == "Bulochka")
+            {
+                drag.MakeFoodDone("Sosis", spRen, drag.sosiska, drag.hotdog);
+            }
             else
             {
                 AddSauce();
@@ -49,8 +53,9 @@ public class CreatedBulka : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        
-        if (spRen.sprite.name != "Bulochka" && eventData.pointerId == 0 && !dg.isDragging)
+        if (spRen.sprite.name == "Bulochka") return;
+
+        if (eventData.pointerId == 0 && dg.SelectedObject == transform.gameObject && !dg.isDragging)
         {
             drag.TakeObjectInHand(spRen, son);
             dg.isDragging = true;
@@ -60,31 +65,41 @@ public class CreatedBulka : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
     {
         if (eventData.pointerId == 0 && dg.isDragging)
         {
-            if (dg.SelectedObject == transform.gameObject) { drag.MousePos(transform.gameObject, eventData.position); }
-            else { dg.isDragging = false; }
+            if (dg.SelectedObject == transform.gameObject)
+            {
+                drag.MousePos(transform.gameObject, eventData.position);
+            }
+            else
+            {
+                dg.isDragging = false;
+            }
         }
     }
     public void OnEndDrag(PointerEventData eventData)
     {
         if (dg.SelectedObject == transform.gameObject && spRen.sprite.name != "Bulochka")
         {
-            hit = drag.Ray(eventData.position);
-            if (hit.collider == null) { BackHome(false); return; }
-            else if (hit.transform.parent.gameObject.name == "OnScene") { Checking(); }
-            else if (hit.transform.gameObject.name == "Trash") { Trash(); }
-            else { BackHome(false); }
+            if (drag.Ray(eventData.position) is RaycastHit2D hit)
+            {
+                if (hit.transform.parent.gameObject.name == "OnScene")
+                {
+                    hit.transform.GetComponent<AnyPerson>().CheckingForDrags();
+                }
+                else if (hit.transform.gameObject.name == "Trash")
+                {
+                    hit.transform.GetComponent<Trash>().TrashForDrags();
+                }
+
+                dg.isDragging = false;
+                return;
+            }
+
+            BackHome(false);
         }
-        else { BackHome(true); }
-    }
-    private void Checking()
-    {
-        hit.transform.GetComponent<AnyPerson>().CheckingForDrags();
-        dg.isDragging = false;
-    }
-    private void Trash()
-    {
-        hit.transform.GetComponent<Trash>().TrashForDrags();
-        dg.isDragging = false;
+        else
+        {
+            BackHome(true);
+        }
     }
     private void BackHome(bool drag)
     {

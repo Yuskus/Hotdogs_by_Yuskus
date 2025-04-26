@@ -26,7 +26,7 @@ public class StartSauceK : MonoBehaviour, IDragHandler, IPointerDownHandler, IEn
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (eventData.pointerId == 0 && !dg.isDragging)
+        if (eventData.pointerId == 0 && dg.SelectedObject == transform.gameObject && !dg.isDragging)
         {
             drag.TakeObjectInHand(spRen);
             dg.isDragging = true;
@@ -45,12 +45,22 @@ public class StartSauceK : MonoBehaviour, IDragHandler, IPointerDownHandler, IEn
         if (dg.SelectedObject == transform.gameObject)
         {
             hit = drag.Ray(eventData.position);
-            if (hit.collider == null) { BackHome(false); return; }
-            else if (hit.transform.gameObject.name == "HotDog") { SauceForHotDog(); }
-            else if (hit.transform.gameObject.name == "Burger") { SauceForBurger(); }
+
+            if (hit.collider != null)
+            {
+                switch (hit.transform.gameObject.name)
+                {
+                    case "HotDog": SauceForHotDog(); break;
+                    case "Burger": SauceForBurger(); break;
+                }
+            }
+
             BackHome(false);
         }
-        else { BackHome(true); }
+        else
+        {
+            BackHome(true);
+        }
     }
     private void SauceForHotDog()
     {

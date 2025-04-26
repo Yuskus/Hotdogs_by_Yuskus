@@ -9,7 +9,6 @@ public class Onion : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerDow
     private float time;
     private bool timer;
     private SpriteRenderer sR, childSR;
-    private RaycastHit2D hit;
     private AudioClip audioClip, dzinn, burntOut;
     private AudioSource audioSource;
     private Animation anim;
@@ -43,13 +42,14 @@ public class Onion : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerDow
             time += Time.deltaTime;
             switch (time)
             {
-                case > 7.0f: if (i != 2) { ChangeSpriteAndAnim(2, burntOut, false); } break;
-                case > 3.0f: if (i != 1) { ChangeSpriteAndAnim(1, dzinn, true); } break;
+                case > 7.0f: ChangeSpriteAndAnim(2, burntOut, false); break;
+                case > 3.0f: ChangeSpriteAndAnim(1, dzinn, true); break;
             }
         }
     }
     private void ChangeSpriteAndAnim(int ind, AudioClip clip, bool isAnimAndTimerPlay)
     {
+        if (i == ind) return;
         i = ind;
         sR.sprite = drag.onion[i];
         timer = isAnimAndTimerPlay;
@@ -67,7 +67,7 @@ public class Onion : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerDow
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (eventData.pointerId == 0 && !dg.isDragging)
+        if (eventData.pointerId == 0 && dg.SelectedObject == transform.gameObject && !dg.isDragging)
         {
             drag.TakeObjectInHand(sR);
             timer = false;
@@ -78,45 +78,63 @@ public class Onion : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerDow
     {
         if (eventData.pointerId == 0 && dg.isDragging)
         {
-            if (dg.SelectedObject == transform.gameObject) { drag.MousePos(transform.gameObject, eventData.position); }
-            else { dg.isDragging = false; }
+            if (dg.SelectedObject == transform.gameObject)
+            {
+                drag.MousePos(transform.gameObject, eventData.position);
+            }
+            else
+            {
+                dg.isDragging = false;
+            }
         }
     }
     public void OnEndDrag(PointerEventData eventData)
     {
         if (dg.SelectedObject == transform.gameObject)
         {
-            hit = drag.Ray(eventData.position);
-            if (hit.collider == null) { BackHome(false); return; }
-            else if (hit.transform.gameObject.name == "HotDog") { SauceForHotDog(); }
-            else if (hit.transform.gameObject.name == "Burger") { SauceForBurger(); }
-            else if (hit.transform.gameObject.name == "Trash") { Trash(); }
-            else { BackHome(false); }
+            RaycastHit2D hit = drag.Ray(eventData.position);
+
+            if (hit.collider != null)
+            {
+                switch (hit.transform.gameObject.name)
+                {
+                    case "HotDog":
+                        {
+                            hit.transform.GetComponent<CreatedBulka>().AddSauce();
+
+                            if (hit.transform.GetComponent<SpriteRenderer>().sprite.name != "Bulochka")
+                            {
+                                dg.SelectedObject = hit.transform.gameObject;
+                            }
+                            break;
+                        }
+                    case "Burger":
+                        {
+                            hit.transform.GetComponent<CreatedBurger>().AddSauce();
+
+                            if (hit.transform.GetComponent<SpriteRenderer>().sprite.name != "BulkaBurger")
+                            {
+                                dg.SelectedObject = hit.transform.gameObject;
+                            }
+                            break;
+                        }
+                    case "Trash":
+                        {
+                            hit.transform.GetComponent<Trash>().TrashForDrags();
+                            break;
+                        }
+                }
+
+                dg.isDragging = false;
+                return;
+            }
+
+            BackHome(false);
         }
-        else { BackHome(true); }
-    }
-    private void SauceForHotDog()
-    {
-        hit.transform.GetComponent<CreatedBulka>().AddSauce();
-        if (hit.transform.GetComponent<SpriteRenderer>().sprite.name != "Bulochka")
+        else
         {
-            dg.SelectedObject = hit.transform.gameObject;
+            BackHome(true);
         }
-        dg.isDragging = false;
-    }
-    private void SauceForBurger()
-    {
-        hit.transform.GetComponent<CreatedBurger>().AddSauce();
-        if (hit.transform.GetComponent<SpriteRenderer>().sprite.name != "BulkaBurger")
-        {
-            dg.SelectedObject = hit.transform.gameObject;
-        }
-        dg.isDragging = false;
-    }
-    private void Trash()
-    {
-        hit.transform.GetComponent<Trash>().TrashForDrags();
-        dg.isDragging = false;
     }
     private void BackHome(bool drag)
     {

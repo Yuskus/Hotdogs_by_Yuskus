@@ -77,7 +77,7 @@ public class CreatedSosis : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (eventData.pointerId == 0 && !dg.isDragging)
+        if (eventData.pointerId == 0 && dg.SelectedObject == transform.gameObject && !dg.isDragging)
         {
             drag.TakeObjectInHand(sR);
             timer = false;
@@ -97,7 +97,7 @@ public class CreatedSosis : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
         if (dg.SelectedObject == transform.gameObject)
         {
             hit = drag.Ray(eventData.position);
-            if (hit.collider == null) { BackHome(false); return; }
+            if (hit.collider == null) { BackHome(false); }
             else if (hit.transform.gameObject.name == "HotDog") { FoodIsDone(); }
             else if (hit.transform.gameObject.name == "Trash") { Trash(); }
             else { BackHome(false); }

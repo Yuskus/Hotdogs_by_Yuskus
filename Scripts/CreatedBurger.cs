@@ -6,26 +6,29 @@ public class CreatedBurger : MonoBehaviour, IDragHandler, IPointerDownHandler, I
     private DraggingComponent drag;
     private Drag dg;
     private SpriteRenderer spRen;
-    private RaycastHit2D hit;
     private bool addedK, addedG, addedO;
     private SpriteRenderer[] son;
-    private AudioClip audioClip;
     private AudioSource audioSource;
     private void Awake()
     {
         drag = transform.parent.parent.GetComponent<DraggingComponent>();
         dg = Camera.main.GetComponent<Drag>();
         spRen = GetComponent<SpriteRenderer>();
-        son = new SpriteRenderer[3];
-        for (int i = 0; i < 3; i++) { son[i] = transform.GetChild(i).GetComponent<SpriteRenderer>(); }
-        audioClip = Resources.Load<AudioClip>("Sounds/add hotdog");
+        son = new SpriteRenderer[3]
+        {
+            transform.GetChild(0).GetComponent<SpriteRenderer>(),
+            transform.GetChild(1).GetComponent<SpriteRenderer>(),
+            transform.GetChild(2).GetComponent<SpriteRenderer>()
+        };
         audioSource = GetComponent<AudioSource>();
-        audioSource.clip = audioClip;
+        audioSource.clip = Resources.Load<AudioClip>("Sounds/add hotdog");
     }
     private void OnEnable()
     {
         spRen.sprite = drag.BulkaBurgerSprite;
-        for (int i = 0; i < 3; i++) { transform.GetChild(i).gameObject.SetActive(false); }
+        transform.GetChild(0).gameObject.SetActive(false);
+        transform.GetChild(1).gameObject.SetActive(false);
+        transform.GetChild(2).gameObject.SetActive(false);
         addedK = false;
         addedG = false;
         addedO = false;
@@ -46,7 +49,9 @@ public class CreatedBurger : MonoBehaviour, IDragHandler, IPointerDownHandler, I
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (spRen.sprite.name != "BulkaBurger" && eventData.pointerId == 0 && !dg.isDragging)
+        if (spRen.sprite.name == "BulkaBurger") return;
+        
+        if (eventData.pointerId == 0 && dg.SelectedObject == transform.gameObject && !dg.isDragging)
         {
             drag.TakeObjectInHand(spRen, son);
             dg.isDragging = true;
@@ -56,31 +61,43 @@ public class CreatedBurger : MonoBehaviour, IDragHandler, IPointerDownHandler, I
     {
         if (eventData.pointerId == 0 && dg.isDragging)
         {
-            if (dg.SelectedObject == transform.gameObject) { drag.MousePos(transform.gameObject, eventData.position); }
-            else { dg.isDragging = false; }
+            if (dg.SelectedObject == transform.gameObject)
+            {
+                drag.MousePos(transform.gameObject, eventData.position);
+            }
+            else
+            {
+                dg.isDragging = false;
+            }
         }
     }
     public void OnEndDrag(PointerEventData eventData)
     {
         if (dg.SelectedObject == transform.gameObject && spRen.sprite.name != "BulkaBurger")
         {
-            hit = drag.Ray(eventData.position);
-            if (hit.collider == null) { BackHome(false); return; }
-            else if (hit.transform.parent.gameObject.name == "OnScene") { Checking(); }
-            else if (hit.transform.gameObject.name == "Trash") { Trash(); }
-            else { BackHome(false); }
+            RaycastHit2D hit = drag.Ray(eventData.position);
+
+            if (hit.collider != null)
+            {
+                if (hit.transform.parent.gameObject.name == "OnScene")
+                {
+                    hit.transform.GetComponent<AnyPerson>().CheckingForDrags();
+                }
+                else if (hit.transform.gameObject.name == "Trash")
+                {
+                    hit.transform.GetComponent<Trash>().TrashForDrags();
+                }
+
+                dg.isDragging = false;
+                return;
+            }
+
+            BackHome(false);
         }
-        else { BackHome(true); }
-    }
-    private void Checking()
-    {
-        hit.transform.GetComponent<AnyPerson>().CheckingForDrags();
-        dg.isDragging = false;
-    }
-    private void Trash()
-    {
-        hit.transform.GetComponent<Trash>().TrashForDrags();
-        dg.isDragging = false;
+        else
+        {
+            BackHome(true);
+        }
     }
     private void BackHome(bool drag)
     {
