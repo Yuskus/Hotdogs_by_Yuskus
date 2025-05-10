@@ -1,18 +1,28 @@
+using System;
 using UnityEngine;
 
 public class CleanWishes : MonoBehaviour
 {
     private SpriteRenderer mySR;
-    private SpriteRenderer[] childSR;
+    private SpriteRenderer[] childSR = Array.Empty<SpriteRenderer>();
+
     private void Awake()
     {
-        childSR = new SpriteRenderer[3];
         mySR = GetComponent<SpriteRenderer>();
-        for (int i = 0; i < 3; i++) { childSR[i] = transform.GetChild(i).GetComponent<SpriteRenderer>(); }
+        childSR = new SpriteRenderer[3]
+        {
+            transform.GetChild(0).GetComponent<SpriteRenderer>(),
+            transform.GetChild(1).GetComponent<SpriteRenderer>(),
+            transform.GetChild(2).GetComponent<SpriteRenderer>()
+        };
     }
+
     public void OffEatPhase()
     {
         mySR.sprite = null;
-        for (int i = 0; i < 3; i++) { childSR[i].sprite = null; }
+
+        childSR[0].sprite = null;
+        childSR[1].sprite = null;
+        childSR[2].sprite = null;
     }
 }

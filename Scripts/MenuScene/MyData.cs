@@ -10,7 +10,7 @@ public class MyData : MonoBehaviour
     private int[] lvlRec = new int[50];
     private readonly int levelsCount = 50;
 
-    private string fileName = "MySavedData.dat";
+    private readonly string fileName = "MySavedData.dat";
     private string path;
     private static GameObject myInstance;
 
@@ -113,7 +113,3 @@ public class SaveMyData
         rec = lvlRec;
     }
 }
-// MenuButtons (109) - ResetData()
-// MenuButtons (46) - LoadData()
-// Game () - SaveData()
-// 

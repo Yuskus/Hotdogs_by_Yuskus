@@ -1,26 +1,33 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class StartOnion : MonoBehaviour, IPointerDownHandler
 {
     private Drag dg;
-    private MyData data;
-    private GameObject[] Onion;
+    private GameObject[] Onion = Array.Empty<GameObject>();
     private void Start()
     {
-        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        MyData data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
         if (data.ContinueGame < RecData.canCookOnion) { transform.gameObject.SetActive(false); }
         dg = Camera.main.GetComponent<Drag>();
-        Onion = new GameObject[2];
-        for (int i = 0; i < 2; i++) { Onion[i] = transform.GetChild(i).GetChild(0).gameObject; }
+        Onion = new GameObject[2]
+        {
+            transform.GetChild(0).GetChild(0).gameObject,
+            transform.GetChild(1).GetChild(0).gameObject
+        };
     }
     public void OnPointerDown(PointerEventData eventData)
     {
         if (!dg.isDragging)
         {
-            for (int i = 0; i < 2; i++)
+            if (!Onion[0].activeInHierarchy)
             {
-                if (!Onion[i].activeInHierarchy) { Onion[i].SetActive(true); break; }
+                Onion[0].SetActive(true);
+            }
+            else if (!Onion[1].activeInHierarchy)
+            {
+                Onion[1].SetActive(true);
             }
         }
     }

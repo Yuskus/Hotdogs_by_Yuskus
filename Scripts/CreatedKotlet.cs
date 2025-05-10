@@ -81,32 +81,39 @@ public class CreatedKotlet : MonoBehaviour, IDragHandler, IPointerDownHandler, I
     {
         if (eventData.pointerId == 0 && dg.isDragging)
         {
-            if (dg.SelectedObject == transform.gameObject) { drag.MousePos(transform.gameObject, eventData.position); }
-            else { dg.isDragging = false; }
+            if (dg.SelectedObject == transform.gameObject)
+            {
+                drag.MousePos(transform.gameObject, eventData.position);
+            }
+            else
+            {
+                dg.isDragging = false;
+            }
         }
     }
     public void OnEndDrag(PointerEventData eventData)
     {
         if (dg.SelectedObject == transform.gameObject)
-        { 
-            if (drag.Ray(eventData.position) is RaycastHit2D hit)
+        {
+            RaycastHit2D hit = drag.Ray(eventData.position);
+
+            if (hit.collider != null)
             {
                 switch (hit.transform.gameObject.name)
                 {
                     case "Burger":
                         {
                             drag.MakeFoodDone("Kotlet", hit.transform.GetComponent<SpriteRenderer>(), drag.kotleta, drag.burger);
-                            break;
+                            dg.isDragging = false;
+                            return;
                         }
                     case "Trash":
                         {
                             hit.transform.GetComponent<Trash>().TrashForDrags();
-                            break;
+                            dg.isDragging = false;
+                            return;
                         }
                 }
-
-                dg.isDragging = false;
-                return;
             }
 
             BackHome(false);

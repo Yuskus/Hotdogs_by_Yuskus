@@ -106,7 +106,9 @@ public class Onion : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerDow
                             {
                                 dg.SelectedObject = hit.transform.gameObject;
                             }
-                            break;
+
+                            dg.isDragging = false;
+                            return;
                         }
                     case "Burger":
                         {
@@ -116,17 +118,17 @@ public class Onion : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerDow
                             {
                                 dg.SelectedObject = hit.transform.gameObject;
                             }
-                            break;
+
+                            dg.isDragging = false;
+                            return;
                         }
                     case "Trash":
                         {
                             hit.transform.GetComponent<Trash>().TrashForDrags();
-                            break;
+                            dg.isDragging = false;
+                            return;
                         }
                 }
-
-                dg.isDragging = false;
-                return;
             }
 
             BackHome(false);

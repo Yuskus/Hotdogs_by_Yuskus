@@ -12,8 +12,6 @@ public class Closed : MonoBehaviour //38 check
     private string winLoseText = "";
     private bool youWin;
     private bool IsMoving;
-    private int MySalary, allTimeSalary;
-    private AudioClip audioClip;
     private AudioSource audioSource;
     private void Start()
     {
@@ -24,9 +22,8 @@ public class Closed : MonoBehaviour //38 check
         Canvas = GameObject.FindGameObjectWithTag("Canvas");
         EndPanel = Canvas.transform.GetChild(1).gameObject;
         levelNum = data.ContinueGame; //reading
-        audioClip = Resources.Load<AudioClip>("Sounds/closed");
         audioSource = GetComponent<AudioSource>();
-        audioSource.clip = audioClip;
+        audioSource.clip = Resources.Load<AudioClip>("Sounds/closed");
     }
     private IEnumerator Closing()
     {
@@ -37,7 +34,6 @@ public class Closed : MonoBehaviour //38 check
             yield return null;
         }
         IsClosed();
-        yield break;
     }
     public void TheCafeIsClosing()
     {
@@ -48,13 +44,12 @@ public class Closed : MonoBehaviour //38 check
     }
     private void IsClosed()
     {
-        allTimeSalary = data.LvlRec.Sum();
         EndPanel.SetActive(true); //on endgame panel
-        MySalary = Camera.main.GetComponent<Game>().MySalary; //save salary
+        int MySalary = Camera.main.GetComponent<Game>().MySalary; //save salary
         if (MySalary >= RecData.plans[levelNum]) { winLoseText = "Good day!"; youWin = true; }
         else { winLoseText = "Try again :("; youWin = false; }
         EndPanel.transform.GetChild(0).GetComponent<Text>().text = winLoseText;
-        EndPanel.transform.GetChild(1).GetComponent<Text>().text = $"Plan: {RecData.plans[levelNum]} \nEarned: {MySalary} \nFor all time: {allTimeSalary}";
+        EndPanel.transform.GetChild(1).GetComponent<Text>().text = $"Plan: {RecData.plans[levelNum]} \nEarned: {MySalary} \nFor all time: {data.LvlRec.Sum()}";
         EndPanel.transform.GetChild(2).GetComponent<Button>().interactable = youWin;
     }
     private void Moving(float speed) => transform.Translate(new Vector2(0, speed) * Time.deltaTime);

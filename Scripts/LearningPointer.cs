@@ -5,19 +5,18 @@ public class LearningPointer : MonoBehaviour
     private Game game;
     private bool moving;
     private bool upDown;
-    private float time, sinusTimer, yPos;
+    private float time, sinusTimer;
     private void Awake()
     {
         game = Camera.main.GetComponent<Game>();
         time = 0;
-        yPos = 0;
     }
     private void Update()
     {
         if (upDown)
         {
             sinusTimer += Time.deltaTime;
-            yPos = 0.25f * Mathf.Sin(sinusTimer * 4f);
+            float yPos = 0.25f * Mathf.Sin(sinusTimer * 4f);
             transform.Translate(new Vector2(yPos, yPos) * Time.deltaTime);
         }
     }

@@ -1,25 +1,38 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class StartSosis : MonoBehaviour, IPointerDownHandler
 {
     private Drag dg;
-    private MyData data;
-    private GameObject PlitaSosis;
+    private GameObject[] Sosiski = Array.Empty<GameObject>();
     private void Start()
     {
-        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        MyData data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
         dg = Camera.main.GetComponent<Drag>();
-        PlitaSosis = transform.parent.GetChild(1).gameObject;
+        Sosiski = new GameObject[3]
+        {
+            transform.parent.GetChild(1).GetChild(0).gameObject,
+            transform.parent.GetChild(1).GetChild(1).gameObject,
+            transform.parent.GetChild(1).GetChild(2).gameObject
+        };
         if (data.ContinueGame == 0 && data.AvailableLevels == 0) { transform.gameObject.AddComponent<L_StartSosis>(); }
     }
     public void OnPointerDown(PointerEventData eventData)
     {
         if (!dg.isDragging)
         {
-            for (int i = 0; i < 3; i++)
+            if (!Sosiski[0].activeInHierarchy)
             {
-                if (!PlitaSosis.transform.GetChild(i).gameObject.activeInHierarchy) { PlitaSosis.transform.GetChild(i).gameObject.SetActive(true); break; }
+                Sosiski[0].SetActive(true);
+            }
+            else if (!Sosiski[1].activeInHierarchy)
+            {
+                Sosiski[1].SetActive(true);
+            }
+            else if(!Sosiski[2].activeInHierarchy)
+            {
+                Sosiski[2].SetActive(true);
             }
         }
     }

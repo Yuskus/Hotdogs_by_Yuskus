@@ -4,16 +4,14 @@ using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using System.Linq;
 
-public class MenuButtons : MonoBehaviour //
+public class MenuButtons : MonoBehaviour
 {
     private MyData data;
-    private GameObject Canvas, Panel1, Panel2, Panel3, Panel4, PanelLevels, MovingForest, Fire;
+    private GameObject Canvas, Panel1, Panel2, Panel3, Panel4, PanelLevels, Fire;
     private Transform FonTr, Fon2Tr, circle1, circle2;
     private GameObject ButtonFire;
-    public static int allTimeSalary;
-    private float offset, offset2, step, circleStep;
+    private float offset, offset2, circleStep;
     private bool move;
-    private AudioClip[] audioClip;
     private AudioSource[] audioSource;
     private string soundChanged = "";
     private void Awake()
@@ -24,21 +22,18 @@ public class MenuButtons : MonoBehaviour //
         Panel3 = Panel1.transform.GetChild(5).gameObject;
         Panel4 = Panel1.transform.GetChild(6).gameObject;
         PanelLevels = Canvas.transform.GetChild(5).gameObject;
-        MovingForest = GameObject.FindGameObjectWithTag("Table");
+        GameObject MovingForest = GameObject.FindGameObjectWithTag("Table");
         Fire = GameObject.FindGameObjectWithTag("Fire");
         ButtonFire = Canvas.transform.GetChild(4).gameObject;
         FonTr = MovingForest.transform.GetChild(0).GetComponent<Transform>();
         Fon2Tr = MovingForest.transform.GetChild(1).GetComponent<Transform>();
         circle1 = MovingForest.transform.GetChild(2).GetComponent<Transform>();
         circle2 = MovingForest.transform.GetChild(3).GetComponent<Transform>();
-        audioClip = new AudioClip[2];
-        audioClip[0] = Resources.Load<AudioClip>("Sounds/tryFullTheme");
-        audioClip[1] = Resources.Load<AudioClip>("Sounds/click");
         audioSource = GetComponents<AudioSource>();
-        audioSource[0].clip = audioClip[0];
+        audioSource[0].clip = Resources.Load<AudioClip>("Sounds/tryFullTheme");
+        audioSource[1].clip = Resources.Load<AudioClip>("Sounds/click");
         audioSource[0].loop = true;
         audioSource[0].Play();
-        audioSource[1].clip = audioClip[1];
         move = true;
     }
     private void Start()
@@ -59,9 +54,8 @@ public class MenuButtons : MonoBehaviour //
     }
     private void MovingFon()
     {
-        step = Time.deltaTime;
-        offset += step;
-        offset2 += step;
+        offset += Time.deltaTime;
+        offset2 += Time.deltaTime;
         FonTr.localPosition = new Vector2(offset, 0);
         Fon2Tr.localPosition = new Vector2(offset2, 0);
         if (move && Fon2Tr.localPosition.x > 0)
@@ -69,7 +63,7 @@ public class MenuButtons : MonoBehaviour //
             offset -= 70f;
             move = false;
         }
-        else if(!move && FonTr.localPosition.x > 0)
+        else if (!move && FonTr.localPosition.x > 0)
         {
             offset2 -= 70f;
             move = true;
@@ -82,8 +76,7 @@ public class MenuButtons : MonoBehaviour //
     }
     public void ButtonOpenLevelsPanel()
     {
-        if (!PanelLevels.activeInHierarchy) { PanelLevels.SetActive(true); }
-        else { PanelLevels.SetActive(false); }
+        PanelLevels.SetActive(!PanelLevels.activeInHierarchy);
     }
     public void ButtonContinue()
     {
@@ -91,8 +84,7 @@ public class MenuButtons : MonoBehaviour //
     }
     public void ButtonForAllTime()
     {
-        allTimeSalary = data.LvlRec.Sum();
-        Panel4.transform.GetChild(0).GetComponent<Text>().text = "Your Salary For All Time:\n\n" + allTimeSalary;
+        Panel4.transform.GetChild(0).GetComponent<Text>().text = "Your Salary For All Time:\n\n" + data.LvlRec.Sum();
     }
     public void ButtonSettingsOrClosePanel1()
     {
@@ -104,8 +96,7 @@ public class MenuButtons : MonoBehaviour //
     public void ButtonOpenOrClosePanel4() => PanelSwitcher(Panel4);
     private void PanelSwitcher(GameObject pan) //сокращение
     {
-        if (pan.activeInHierarchy) { pan.SetActive(false); }
-        else { pan.SetActive(true); }
+        pan.SetActive(!pan.activeInHierarchy);
     }
     public void DeleteRecords() //если согласился удалить рекорды
     {
@@ -116,9 +107,14 @@ public class MenuButtons : MonoBehaviour //
     public void MakeButtonsUnblocked() => ButtonsRaycast(true);
     private void ButtonsRaycast(bool yesorno)
     {
-        for (int i = 0; i < 4; i++) { Panel1.transform.GetChild(i).GetComponent<Button>().enabled = yesorno; }
         Canvas.transform.GetChild(1).GetComponent<Button>().enabled = yesorno;
         Canvas.transform.GetChild(2).GetComponent<Button>().enabled = yesorno;
+
+        Panel1.transform.GetChild(0).GetComponent<Button>().enabled = yesorno;
+        Panel1.transform.GetChild(1).GetComponent<Button>().enabled = yesorno;
+        Panel1.transform.GetChild(2).GetComponent<Button>().enabled = yesorno;
+        Panel1.transform.GetChild(3).GetComponent<Button>().enabled = yesorno;
+
         Panel1.transform.GetChild(7).GetComponent<Button>().enabled = yesorno;
     }
     public void ButtonSoundSwitcher()

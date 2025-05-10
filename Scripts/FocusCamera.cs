@@ -3,35 +3,36 @@ using UnityEngine.SceneManagement;
 
 public class FocusCamera : MonoBehaviour
 {
-    private float size, aspectRatio;
-    private Vector3 yPos;
     public void CameraPos(Camera Cam)
     {
-        aspectRatio = (float) Screen.width / Screen.height;
+        float aspectRatio = (float) Screen.width / Screen.height;
+
         switch (aspectRatio)
         {
-            case < 1.5f: ValuesForCamera(3.4f, 9.1f); ForBigSizeOfDisp(); break;
-            case < 2.0f: ValuesForCamera(1.5f, 7.2f); break;
-            case < 2.2f: ValuesForCamera(0.4f, 6.6f); break;
-            case < 2.5f: ValuesForCamera(0.2f, 6.45f); break;
-            default: ValuesForCamera(0f, 6.0f); break;
+            case < 1.5f: ValuesForCamera(Cam, 3.4f, 9.1f, true); break;
+            case < 2.0f: ValuesForCamera(Cam, 1.5f, 7.2f); break;
+            case < 2.2f: ValuesForCamera(Cam, 0.4f, 6.6f); break;
+            case < 2.5f: ValuesForCamera(Cam, 0.2f, 6.45f); break;
+            default: ValuesForCamera(Cam, 0f, 6.0f); break;
         }
-        Cam.GetComponent<Transform>().position = yPos;
-        Cam.GetComponent<Camera>().orthographicSize = size;
     }
-    private void ValuesForCamera(float y1, float y2)
+
+    private void ValuesForCamera(Camera Cam, float yPos, float orthographicSize, bool isBigDisplay = false)
     {
-        yPos = new(0, y1, -10);
-        size = y1 + 4.7f;
         if (SceneManager.GetActiveScene().buildIndex == 0)
         {
-            yPos.y = 0;
-            size = y2;
+            Cam.GetComponent<Transform>().position = new(0, 0, -10);
+            Cam.GetComponent<Camera>().orthographicSize = orthographicSize;
         }
-    }
-    private void ForBigSizeOfDisp()
-    {
-        if (SceneManager.GetActiveScene().name == "Menu") { return; }
-        GameObject.FindGameObjectWithTag("Sky").GetComponent<Transform>().position = new Vector2(0, 2);
+        else
+        {
+            Cam.GetComponent<Transform>().position = new(0, yPos, -10);
+            Cam.GetComponent<Camera>().orthographicSize = yPos + 4.7f;
+
+            if (isBigDisplay)
+            {
+                GameObject.FindGameObjectWithTag("Sky").GetComponent<Transform>().position = new Vector2(0, 2);
+            }
+        }
     }
 }

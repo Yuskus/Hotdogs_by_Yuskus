@@ -3,7 +3,6 @@ using UnityEngine;
 public class Level_21 : MonoBehaviour //горчица - 1 стрелка - доступный равен 8
 {
     private Game game;
-    private MyData data;
 
     private LearningPointer lp;
 
@@ -25,7 +24,7 @@ public class Level_21 : MonoBehaviour //горчица - 1 стрелка - доступный равен 8
     private void Start()
     {
         game.StartAnyLevel();
-        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        MyData data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
         if (levelInfo.LevelNumber == data.AvailableLevels) { Learning(); }
         else
         {

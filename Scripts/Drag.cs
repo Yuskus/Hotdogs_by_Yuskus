@@ -1,11 +1,11 @@
+using System;
 using UnityEngine;
 
 public class Drag : MonoBehaviour
 {
     private GameObject selectedObject, zero;
     public bool isDragging;
-    public delegate void Ho();
-    public event Ho Choised;
+    public event Action Choised;
     public void Awake()
     {
         Zero = GameObject.FindGameObjectWithTag("Table").transform.GetChild(0).gameObject;

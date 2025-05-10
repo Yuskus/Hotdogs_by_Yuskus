@@ -19,8 +19,12 @@ public class CreatedBulka : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
             transform.gameObject.AddComponent<L_CreatedBulka>();
         }
         spRen = GetComponent<SpriteRenderer>();
-        son = new SpriteRenderer[3];
-        for (int i = 0; i < 3; i++) { son[i] = transform.GetChild(i).GetComponent<SpriteRenderer>(); }
+        son = new SpriteRenderer[3]
+        {
+            transform.GetChild(0).GetComponent<SpriteRenderer>(),
+            transform.GetChild(1).GetComponent<SpriteRenderer>(),
+            transform.GetChild(2).GetComponent<SpriteRenderer>()
+        };
         audioSource = GetComponent<AudioSource>();
         audioSource.clip = Resources.Load<AudioClip>("Sounds/add hotdog");
     }
@@ -79,7 +83,13 @@ public class CreatedBulka : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
     {
         if (dg.SelectedObject == transform.gameObject && spRen.sprite.name != "Bulochka")
         {
-            if (drag.Ray(eventData.position) is RaycastHit2D hit)
+            RaycastHit2D hit = drag.Ray(eventData.position);
+
+            if (hit.collider == null)
+            {
+                BackHome(false);
+            }
+            else
             {
                 if (hit.transform.parent.gameObject.name == "OnScene")
                 {
@@ -91,10 +101,7 @@ public class CreatedBulka : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
                 }
 
                 dg.isDragging = false;
-                return;
             }
-
-            BackHome(false);
         }
         else
         {

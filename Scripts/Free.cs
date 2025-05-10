@@ -6,7 +6,6 @@ public class Free : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndDragHa
     private DraggingComponent drag;
     private Drag dg;
     private SpriteRenderer spRen;
-    private RaycastHit2D hit;
     private void Awake()
     {
         drag = transform.parent.parent.GetComponent<DraggingComponent>();
@@ -23,7 +22,7 @@ public class Free : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndDragHa
     public void OnBeginDrag(PointerEventData eventData)
     {
         
-        if (eventData.pointerId == 0 && !dg.isDragging)
+        if (eventData.pointerId == 0 && dg.SelectedObject == transform.gameObject && !dg.isDragging)
         {
             drag.TakeObjectInHand(spRen);
             dg.isDragging = true;
@@ -33,24 +32,33 @@ public class Free : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndDragHa
     {
         if (eventData.pointerId == 0 && dg.isDragging)
         {
-            if (dg.SelectedObject == transform.gameObject) { drag.MousePos(transform.gameObject, eventData.position); }
-            else { dg.isDragging = false; }
+            if (dg.SelectedObject == transform.gameObject)
+            {
+                drag.MousePos(transform.gameObject, eventData.position);
+            }
+            else
+            {
+                dg.isDragging = false;
+            }
         }
     }
     public void OnEndDrag(PointerEventData eventData)
     {
         if (dg.SelectedObject == transform.gameObject)
         {
-            hit = drag.Ray(eventData.position);
-            if (hit.collider == null) { BackHome(false); return; }
-            else if (hit.transform.parent.gameObject.name == "OnScene") { Checking(); }
+            RaycastHit2D hit = drag.Ray(eventData.position);
+
+            if (hit.collider != null && hit.transform.parent.gameObject.name == "OnScene")
+            {
+                hit.transform.GetComponent<AnyPerson>().CheckingForDrags();
+            }
+
             BackHome(false);
         }
-        else { BackHome(true); }
-    }
-    private void Checking()
-    {
-        hit.transform.GetComponent<AnyPerson>().CheckingForDrags();
+        else
+        {
+            BackHome(true);
+        }
     }
     private void BackHome(bool drag)
     {

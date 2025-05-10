@@ -5,20 +5,17 @@ using UnityEngine.EventSystems;
 public class AnyPerson : MonoBehaviour, IPointerDownHandler
 {
     private Game game;
-    private MyData data;
     private DraggingComponent drag;
     private Drag dg;
     private HairList hr;
 
-    private GameObject AllClients;
     private GameObject AtHome, OnScene;
     public int RandomIndex { get; private set; }
-    private int sign, index, state; //локальные индексы для методов
-    private int price, walkLayer, standLayer, guiltyLayer, runLayer, eyeColor, eyebrowColor;
+    private int state, price, walkLayer, standLayer, guiltyLayer, runLayer, eyeColor, eyebrowColor;
     public float Timer { get; private set; }
-    private float sinusTimer, amp, freq, maxAmp, runSpeed, walkSpeed, startSpeed, limit;
+    private float sinusTimer, amp, freq, maxAmp, runSpeed, walkSpeed, limit;
     private readonly Vector2 OffPlace = new(0f, -10f);
-    private Vector2 myPlace, PlaceOfMyDeath, moving;
+    private Vector2 myPlace, moving;
     private bool IsWalking;
     private bool onceTimerBool, stopping, speedUp, IsItBadGuy, timerIsRunning, DidNotStopYet;
     private List<(string name, int code, int number)> myEat;
@@ -35,10 +32,10 @@ public class AnyPerson : MonoBehaviour, IPointerDownHandler
     private void Awake()
     {
         game = Camera.main.GetComponent<Game>();
-        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        MyData data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
         drag = GameObject.FindGameObjectWithTag("Table").GetComponent<DraggingComponent>();
         dg = Camera.main.GetComponent<Drag>();
-        AllClients = GameObject.FindGameObjectWithTag("Player");
+        GameObject AllClients = GameObject.FindGameObjectWithTag("Player");
         AtHome = AllClients.transform.GetChild(0).gameObject;
         OnScene = AllClients.transform.GetChild(1).gameObject;
         hr = AllClients.GetComponent<HairList>();
@@ -46,8 +43,14 @@ public class AnyPerson : MonoBehaviour, IPointerDownHandler
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
         myEat = new(5);
-        if (transform.gameObject.CompareTag("Man")) { audioClip = hr.audioClipM; }
-        else { audioClip = hr.audioClipW; }
+        if (transform.gameObject.CompareTag("Man"))
+        {
+            audioClip = hr.audioClipM;
+        }
+        else
+        {
+            audioClip = hr.audioClipW;
+        }
         bodySR = transform.GetChild(0).GetComponent<SpriteRenderer>();
         faceSR = transform.GetChild(1).GetComponent<SpriteRenderer>();
         hairSR = transform.GetChild(2).GetComponent<SpriteRenderer>();
@@ -57,11 +60,12 @@ public class AnyPerson : MonoBehaviour, IPointerDownHandler
     public void AlwaysAtStart(float factorOfWalkSpeed, float runSpeed, float bonusPayLimit, int procentOfGoodPeople) //при вызове клиента на сцену в методе он энейбл
     {
         transform.SetParent(OnScene.transform);
-        transform.localPosition = Random.Range(0, 2) == 0 ? Vector2.zero : new(27, 0);
+        bool zeroPosition = Random.Range(0, 2) == 0;
+        transform.localPosition = zeroPosition ? Vector2.zero : new(27, 0);
         RandomIndex = hr.randomIndex.Count == 0 ? 6 : hr.randomIndex[Random.Range(0, hr.randomIndex.Count)];
         DidNotStopYet = true;
         moving = Vector2.zero;
-        PlaceOfMyDeath = transform.localPosition.x == 0 ? new Vector2(27, 0) : Vector2.zero;
+        Vector2 PlaceOfMyDeath = zeroPosition ? new Vector2(27, 0) : Vector2.zero;
 
         if (RandomIndex != 6)
         {
@@ -70,9 +74,9 @@ public class AnyPerson : MonoBehaviour, IPointerDownHandler
             IsItBadGuy = Random.Range(0, 100) >= procentOfGoodPeople && System.Math.Abs(PlaceOfMyDeath.x - myPlace.x) >= 6;
         }
 
-        sign = transform.localPosition.x == 0 ? 1 : -1;
+        int sign = zeroPosition ? 1 : -1;
         walkSpeed = sign * factorOfWalkSpeed;
-        startSpeed = sign * (factorOfWalkSpeed + 1f);
+        float startSpeed = sign * (factorOfWalkSpeed + 1f);
         this.runSpeed = sign * runSpeed;
         InitializeMyFace();
         ChangeFace(Emotion.normal);
@@ -341,7 +345,7 @@ public class AnyPerson : MonoBehaviour, IPointerDownHandler
         if (!IsWalking && dg.SelectedObject.TryGetComponent(out FoodCode foodCode))
         {
             // есть ли еда в списке желаний
-            index = myEat.Exists(tuple => tuple.code == foodCode.Index && foodCode.Index != 0) // что-то конкретно соответствует по фудкоду? (для хотдогов или бургеров)
+            int index = myEat.Exists(tuple => tuple.code == foodCode.Index && foodCode.Index != 0) // что-то конкретно соответствует по фудкоду? (для хотдогов или бургеров)
                   ? myEat.FindIndex(tuple => tuple.code == foodCode.Index) // тогда выбираем по фудкоду
                   : myEat.FindIndex(tuple => tuple.name == dg.SelectedObject.name); // иначе - по имени
 

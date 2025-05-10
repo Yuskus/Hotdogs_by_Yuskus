@@ -5,12 +5,10 @@ public class CreatedSosis : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
 {
     private DraggingComponent drag;
     private Drag dg;
-    private MyData data;
     private int i;
     private float time;
     private bool timer;
     private SpriteRenderer sR, childSR;
-    private RaycastHit2D hit;
     private AudioClip audioClip, dzinn, burntOut;
     private AudioSource audioSource;
     private Animation anim;
@@ -18,7 +16,7 @@ public class CreatedSosis : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
     {
         drag = transform.parent.parent.GetComponent<DraggingComponent>();
         dg = Camera.main.GetComponent<Drag>();
-        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        MyData data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
         if (data.ContinueGame == 0 && data.AvailableLevels == 0 && transform.GetSiblingIndex() == 0)
         {
             transform.gameObject.AddComponent<L_CreatedSosis>();
@@ -88,31 +86,47 @@ public class CreatedSosis : MonoBehaviour, IPointerDownHandler, IBeginDragHandle
     {
         if (eventData.pointerId == 0 && dg.isDragging)
         {
-            if (dg.SelectedObject == transform.gameObject) { drag.MousePos(transform.gameObject, eventData.position); }
-            else { dg.isDragging = false; }
+            if (dg.SelectedObject == transform.gameObject)
+            {
+                drag.MousePos(transform.gameObject, eventData.position);
+            }
+            else
+            {
+                dg.isDragging = false;
+            }
         }
     }
     public void OnEndDrag(PointerEventData eventData)
     {
         if (dg.SelectedObject == transform.gameObject)
         {
-            hit = drag.Ray(eventData.position);
-            if (hit.collider == null) { BackHome(false); }
-            else if (hit.transform.gameObject.name == "HotDog") { FoodIsDone(); }
-            else if (hit.transform.gameObject.name == "Trash") { Trash(); }
-            else { BackHome(false); }
+            RaycastHit2D hit = drag.Ray(eventData.position);
+
+            if (hit.collider != null)
+            {
+                switch (hit.transform.gameObject.name)
+                {
+                    case "HotDog":
+                        {
+                            drag.MakeFoodDone("Sosis", hit.transform.GetComponent<SpriteRenderer>(), drag.sosiska, drag.hotdog);
+                            dg.isDragging = false;
+                            return;
+                        }
+                    case "Trash":
+                        {
+                            hit.transform.GetComponent<Trash>().TrashForDrags();
+                            dg.isDragging = false;
+                            return;
+                        }
+                }
+            }
+
+            BackHome(false);
         }
-        else { BackHome(true); }
-    }
-    private void FoodIsDone()
-    {
-        drag.MakeFoodDone("Sosis", hit.transform.GetComponent<SpriteRenderer>(), drag.sosiska, drag.hotdog);
-        dg.isDragging = false;
-    }
-    private void Trash()
-    {
-        hit.transform.GetComponent<Trash>().TrashForDrags();
-        dg.isDragging = false;
+        else
+        {
+            BackHome(true);
+        }
     }
     private void BackHome(bool drag)
     {

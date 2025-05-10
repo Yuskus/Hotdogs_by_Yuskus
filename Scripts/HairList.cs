@@ -3,12 +3,15 @@ using UnityEngine;
 
 public class HairList : MonoBehaviour
 {
-    public List<int> haircutsMan = new();
-    public List<int> haircutsWoman = new();
     public Sprite[] hair = new Sprite[13];
     public Sprite[,,] faces = new Sprite[2,4,6]; //eyes, eyebrows color, emotion
-    public List<int> randomIndex = new() { 0, 1, 2, 3, 4 };
+
     public AudioClip[] audioClipM, audioClipW;
+
+    public List<int> haircutsMan = new() { 0, 1, 2, 3, 4, 5, 6 };
+    public List<int> haircutsWoman = new() { 7, 8, 9, 10, 11, 12 };
+    public List<int> randomIndex = new() { 0, 1, 2, 3, 4 };
+
     public readonly int[] hairColor = new int[13]
     {
         (int)Colors.black,
@@ -25,22 +28,12 @@ public class HairList : MonoBehaviour
         (int)Colors.blond,
         (int)Colors.brown
     };
+
     public enum Colors { black, blond, red, brown };
+
     private void Start()
     {
         hair = Resources.LoadAll<Sprite>("Sprites/People/Haircuts");
-
-        for (int i = 0; i < 13; i++)
-        {
-            if (i < 7)
-            {
-                haircutsMan.Add(i);
-            }
-            else
-            {
-                haircutsWoman.Add(i);
-            }
-        }
 
         for (int i = 0; i < 6; i++)
         {

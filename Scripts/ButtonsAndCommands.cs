@@ -8,7 +8,6 @@ public class ButtonsAndCommands : MonoBehaviour
     private MyData data;
     private GameObject Canvas, PausePanel;
     private int indexOfLevel;
-    private AudioClip[] audioClip;
     private AudioSource[] audioSource;
     private string soundChanged = "";
     private void Start()
@@ -17,12 +16,9 @@ public class ButtonsAndCommands : MonoBehaviour
         data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
         PausePanel = Canvas.transform.GetChild(5).gameObject;
         indexOfLevel = data.ContinueGame + 1; //reading
-        audioClip = new AudioClip[2];
-        audioClip[0] = Resources.Load<AudioClip>("Sounds/click");
-        audioClip[1] = Resources.Load<AudioClip>("Sounds/crowd");
         audioSource = GetComponents<AudioSource>();
-        audioSource[0].clip = audioClip[0];
-        audioSource[1].clip = audioClip[1];
+        audioSource[0].clip = Resources.Load<AudioClip>("Sounds/click");
+        audioSource[1].clip = Resources.Load<AudioClip>("Sounds/crowd");
         audioSource[1].loop = true;
         audioSource[1].Play();
         RecData.LoadStateOfSound(ref soundChanged);
@@ -105,6 +101,5 @@ public class ButtonsAndCommands : MonoBehaviour
             audioSource[1].volume = Mathf.Lerp(startVolume, targetVolume, currentTime / duration);
             yield return null;
         }
-        yield break;
     }
 }

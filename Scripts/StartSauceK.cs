@@ -6,16 +6,13 @@ public class StartSauceK : MonoBehaviour, IDragHandler, IPointerDownHandler, IEn
     private DraggingComponent drag;
     private Drag dg;
     private SpriteRenderer spRen;
-    private RaycastHit2D hit;
-    private AudioClip audioClipK;
     private void Start()
     {
         drag = transform.parent.GetComponent<DraggingComponent>();
         dg = Camera.main.GetComponent<Drag>();
         spRen = GetComponent<SpriteRenderer>();
-        audioClipK = Resources.Load<AudioClip>("Sounds/sauce 1");
         drag.audioSourceK = GetComponent<AudioSource>();
-        drag.audioSourceK.clip = audioClipK;
+        drag.audioSourceK.clip = Resources.Load<AudioClip>("Sounds/sauce 1");
     }
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -36,22 +33,44 @@ public class StartSauceK : MonoBehaviour, IDragHandler, IPointerDownHandler, IEn
     {
         if (eventData.pointerId == 0 && dg.isDragging)
         {
-            if (dg.SelectedObject == transform.gameObject) { drag.MousePos(transform.gameObject, eventData.position); }
-            else { dg.isDragging = false; }
+            if (dg.SelectedObject == transform.gameObject)
+            {
+                drag.MousePos(transform.gameObject, eventData.position);
+            }
+            else
+            {
+                dg.isDragging = false;
+            }
         }
     }
     public void OnEndDrag(PointerEventData eventData)
     {
         if (dg.SelectedObject == transform.gameObject)
         {
-            hit = drag.Ray(eventData.position);
+            RaycastHit2D hit = drag.Ray(eventData.position);
 
             if (hit.collider != null)
             {
                 switch (hit.transform.gameObject.name)
                 {
-                    case "HotDog": SauceForHotDog(); break;
-                    case "Burger": SauceForBurger(); break;
+                    case "HotDog":
+                        {
+                            hit.transform.GetComponent<CreatedBulka>().AddSauce();
+                            if (hit.transform.GetComponent<SpriteRenderer>().sprite.name != "Bulochka")
+                            {
+                                dg.SelectedObject = hit.transform.gameObject;
+                            }
+                            break;
+                        }
+                    case "Burger":
+                        {
+                            hit.transform.GetComponent<CreatedBurger>().AddSauce();
+                            if (hit.transform.GetComponent<SpriteRenderer>().sprite.name != "BulkaBurger")
+                            {
+                                dg.SelectedObject = hit.transform.gameObject;
+                            }
+                            break;
+                        }
                 }
             }
 
@@ -60,22 +79,6 @@ public class StartSauceK : MonoBehaviour, IDragHandler, IPointerDownHandler, IEn
         else
         {
             BackHome(true);
-        }
-    }
-    private void SauceForHotDog()
-    {
-        hit.transform.GetComponent<CreatedBulka>().AddSauce();
-        if (hit.transform.GetComponent<SpriteRenderer>().sprite.name != "Bulochka")
-        {
-            dg.SelectedObject = hit.transform.gameObject;
-        }
-    }
-    private void SauceForBurger()
-    {
-        hit.transform.GetComponent<CreatedBurger>().AddSauce();
-        if (hit.transform.GetComponent<SpriteRenderer>().sprite.name != "BulkaBurger")
-        {
-            dg.SelectedObject = hit.transform.gameObject;
         }
     }
     private void BackHome(bool drag)

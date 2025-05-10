@@ -56,7 +56,9 @@ public class Drink : MonoBehaviour, IDragHandler, IPointerDownHandler, IEndDragH
     {
         if (dg.SelectedObject == transform.gameObject)
         {
-            if (drag.Ray(eventData.position) is RaycastHit2D hit && hit.transform.parent.gameObject.name == "OnScene")
+            RaycastHit2D hit = drag.Ray(eventData.position);
+
+            if (hit.collider != null && hit.transform.parent.gameObject.name == "OnScene")
             {
                 hit.transform.GetComponent<AnyPerson>().CheckingForDrags();
             }

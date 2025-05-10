@@ -9,7 +9,7 @@ public class Money : MonoBehaviour, IPointerDownHandler
     private MoneySound sound;
     private int number;
     private int price;
-    private GameObject CurrentParent, ParentOfThiefsMoney, TextPref;
+    private GameObject CurrentParent, ParentOfThiefsMoney;
 
     private void Awake()
     {
@@ -29,26 +29,15 @@ public class Money : MonoBehaviour, IPointerDownHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         if (dg.isDragging) return;
-        if (CurrentParent == ParentOfThiefsMoney)
-        {
-            GetThiefsMoney();
-        }
-        else
+
+        if (CurrentParent != ParentOfThiefsMoney)
         {
             GetClientsMoney();
         }
-    }
-
-    private void GetThiefsMoney()
-    {
-        game.MySalary += price;
-        TextPref = Instantiate(game.TextPref, ParentOfThiefsMoney.transform, false);
-        TextPref.transform.localPosition = new Vector2(transform.localPosition.x, 3.75f);
-        TextPref.transform.GetComponent<TextMeshPro>().text = $"+{price}";
-        game.MoneyOnTable -= 1;
-        sound.Play();
-        Destroy(TextPref, 2f);
-        Destroy(transform.gameObject);
+        else
+        {
+            GetThiefsMoney();
+        }
     }
 
     private void GetClientsMoney()
@@ -64,6 +53,18 @@ public class Money : MonoBehaviour, IPointerDownHandler
         transform.gameObject.SetActive(false);
     }
 
+    private void GetThiefsMoney()
+    {
+        game.MySalary += price;
+        GameObject TextPref = Instantiate(game.TextPref, ParentOfThiefsMoney.transform, false);
+        TextPref.transform.localPosition = new Vector2(transform.localPosition.x, 3.75f);
+        TextPref.transform.GetComponent<TextMeshPro>().text = $"+{price}";
+        game.MoneyOnTable -= 1;
+        sound.Play();
+        Destroy(TextPref, 2f);
+        Destroy(transform.gameObject);
+    }
+
     public void WritingInPrice(int value)
     {
         price = value;
@@ -74,12 +75,7 @@ public class Money : MonoBehaviour, IPointerDownHandler
         TextIs(number, 0, "");
         SetAct(number, false);
     }
-    private GameObject CreatingReturns(GameObject clone, GameObject parent, Vector2 place)
-    {
-        GameObject copy = Instantiate(clone, parent.transform, false);
-        copy.transform.localPosition = place;
-        return copy;
-    }
+
     private void SetAct(int num, bool active) => game.Interactive.transform.GetChild(1).GetChild(num).GetChild(1).gameObject.SetActive(active); //money
     private void TextIs(int num, int price, string text) => game.Interactive.transform.GetChild(1).GetChild(num).GetChild(1).GetComponent<TextMeshPro>().text = text + price; //money
 }

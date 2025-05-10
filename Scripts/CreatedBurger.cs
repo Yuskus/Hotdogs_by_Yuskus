@@ -39,7 +39,10 @@ public class CreatedBurger : MonoBehaviour, IDragHandler, IPointerDownHandler, I
     {
         if (!dg.isDragging)
         {
-            if (spRen.sprite.name == "BulkaBurger") { drag.MakeFoodDone("Kotlet", spRen, drag.kotleta, drag.burger); }
+            if (spRen.sprite.name == "BulkaBurger")
+            {
+                drag.MakeFoodDone("Kotlet", spRen, drag.kotleta, drag.burger);
+            }
             else
             {
                 AddSauce();
@@ -77,7 +80,11 @@ public class CreatedBurger : MonoBehaviour, IDragHandler, IPointerDownHandler, I
         {
             RaycastHit2D hit = drag.Ray(eventData.position);
 
-            if (hit.collider != null)
+            if (hit.collider == null)
+            {
+                BackHome(false);
+            }
+            else
             {
                 if (hit.transform.parent.gameObject.name == "OnScene")
                 {
@@ -89,10 +96,7 @@ public class CreatedBurger : MonoBehaviour, IDragHandler, IPointerDownHandler, I
                 }
 
                 dg.isDragging = false;
-                return;
             }
-
-            BackHome(false);
         }
         else
         {

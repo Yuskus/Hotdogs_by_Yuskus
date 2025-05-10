@@ -3,7 +3,7 @@ using UnityEngine;
 public class Level_41 : MonoBehaviour
 {
     private Game game;
-    private MyData data;
+
     private LearningPointer lp;
 
     private readonly FirstFewPeopleInfo levelInfo = new()
@@ -24,7 +24,7 @@ public class Level_41 : MonoBehaviour
     private void Start()
     {
         game.StartAnyLevel();
-        data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
+        MyData data = GameObject.FindGameObjectWithTag("Saving").GetComponent<MyData>();
         if (levelInfo.LevelNumber == data.AvailableLevels) { Learning(); }
         else
         {
