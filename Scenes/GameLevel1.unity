@@ -2560,7 +2560,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e22263ea2539f4092252c6bc0b1502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 0
 --- !u!82 &127348474
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3995,7 +3994,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e22263ea2539f4092252c6bc0b1502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 0
 --- !u!1 &181981395
 GameObject:
   m_ObjectHideFlags: 0
@@ -5024,7 +5022,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e22263ea2539f4092252c6bc0b1502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 0
 --- !u!82 &227900353
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5840,8 +5837,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0acb5c178725aa242b73df3379f9c97c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  haircutsMan: 
-  haircutsWoman: 
   hair:
   - {fileID: 0}
   - {fileID: 0}
@@ -5856,16 +5851,11 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  randomIndex: 0000000001000000020000000300000004000000
   audioClipM: []
   audioClipW: []
+  haircutsMan: 00000000010000000200000003000000040000000500000006000000
+  haircutsWoman: 0700000008000000090000000a0000000b0000000c000000
+  randomIndex: 0000000001000000020000000300000004000000
 --- !u!1 &317822582
 GameObject:
   m_ObjectHideFlags: 0
@@ -6063,7 +6053,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e22263ea2539f4092252c6bc0b1502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 0
 --- !u!1 &334738653
 GameObject:
   m_ObjectHideFlags: 0
@@ -8618,7 +8607,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e22263ea2539f4092252c6bc0b1502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 0
 --- !u!1 &484798513
 GameObject:
   m_ObjectHideFlags: 0
@@ -8820,7 +8808,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e22263ea2539f4092252c6bc0b1502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 0
 --- !u!82 &484798522
 AudioSource:
   m_ObjectHideFlags: 0
@@ -12835,7 +12822,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e22263ea2539f4092252c6bc0b1502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 0
 --- !u!1 &706245636
 GameObject:
   m_ObjectHideFlags: 0
@@ -13730,7 +13716,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e22263ea2539f4092252c6bc0b1502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 0
 --- !u!82 &793809092
 AudioSource:
   m_ObjectHideFlags: 0
@@ -19009,7 +18994,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e22263ea2539f4092252c6bc0b1502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 0
 --- !u!1 &1134585678
 GameObject:
   m_ObjectHideFlags: 0
@@ -27275,7 +27259,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e22263ea2539f4092252c6bc0b1502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 0
 --- !u!82 &1705899200
 AudioSource:
   m_ObjectHideFlags: 0
@@ -28496,38 +28479,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BulkaHotDogSprite: {fileID: 0}
   BulkaBurgerSprite: {fileID: 0}
-  sosiska:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  hotdog:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  kotleta:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  burger:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  onion:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  HD_added:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  B_added:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  sosiska: []
+  hotdog: []
+  kotleta: []
+  burger: []
+  onion: []
+  HD_added: []
+  B_added: []
   audioSourceK: {fileID: 0}
   audioSourceG: {fileID: 0}
 --- !u!82 &1825455266
